@@ -12,12 +12,12 @@ public class EncryptionService : IEncryptionService
         throw new NotImplementedException();
     }
 
-    public byte[] HashPassword(string password)
+    public byte[] HashText(string plainText)
     {
         throw new NotImplementedException();
     }
 
-    public void SaltPassword(string salt, string password)
+    public void SaltHash(string salt, byte[] hash)
     {
         throw new NotImplementedException();
     }

@@ -10,6 +10,14 @@ class Program
         Console.WriteLine("Hello, World!");
         var cred = new Credential("test", "what the heck", "Test Credential");
         var xml = new CredentialXMLHandler();
+        if (xml.AddCredential(cred))
+        {
+            Console.WriteLine("Successfully Added Credential");
+        }
+        else
+        {
+            Console.WriteLine("Failed to Add Credential");
+        }
 
         var cont = true;
         while(cont)
