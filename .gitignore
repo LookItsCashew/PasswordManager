@@ -5,5 +5,5 @@
 
 *\bin\
 *\obj\*
-*/bin/*
-*/bin/*
+./CredentialManager/bin/*
+./CredentialManager/obj/*
