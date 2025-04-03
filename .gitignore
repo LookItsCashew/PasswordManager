@@ -1,6 +1,7 @@
 .idea
 *dll
 *exe
+*credentials.xml
 
 *\bin\
 *\obj\
