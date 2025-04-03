@@ -2,6 +2,7 @@
 *dll
 *exe
 *credentials.xml
+csproj.*
 
 *\bin\
 *\obj\*
