@@ -1,5 +1,9 @@
-﻿using System.Security.Cryptography;
-using CredentialManager.XML;
+﻿using System.Buffers.Text;
+using System.Net;
+using System.Security.Cryptography;
+using System.Text.Unicode;
+using CredentialManager.Credentials;
+using CredentialManager.Encryption;
 
 namespace CredentialManager;
 
@@ -7,9 +11,12 @@ class Program
 {
     static void Main()
     {
-        Console.WriteLine("Hello, World!");
-        var cred = new Credential("test", "what the heck", "Test Credential");
-        var xml = new CredentialXMLHandler();
+        ICredentialService xml = new CredentialXmlService();
+        IEncryptionService encryption = new EncryptionService("TestKeyLol");
+        var testPwd = "ImaPassw0rd";
+        var encryptedPwd = encryption.EncryptText(testPwd);
+        var cred = new Credential("test", encryptedPwd, "Test Credential");
+        
         if (xml.AddCredential(cred))
         {
             Console.WriteLine("Successfully Added Credential");
@@ -17,6 +24,15 @@ class Program
         else
         {
             Console.WriteLine("Failed to Add Credential");
+        }
+        
+        var credentials = xml.GetCredentials();
+        foreach (var c in credentials)
+        {
+            Console.WriteLine(c.Nickname);
+            Console.WriteLine(c.Username);
+            Console.WriteLine(c.Password);
+            Console.WriteLine("=======");
         }
 
         var cont = true;

@@ -4,6 +4,6 @@
 *credentials.xml
 
 *\bin\
-*\obj\
-*/bin/
-*/bin/
+*\obj\*
+*/bin/*
+*/bin/*

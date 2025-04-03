@@ -1,4 +1,6 @@
-﻿namespace CredentialManager.User;
+﻿using CredentialManager.Credentials;
+
+namespace CredentialManager.User;
 
 public class UserService : IUserService
 {

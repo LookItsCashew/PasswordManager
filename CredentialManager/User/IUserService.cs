@@ -1,4 +1,4 @@
-﻿using CredentialManager;
+﻿using CredentialManager.Credentials;
 
 namespace CredentialManager.User;
 

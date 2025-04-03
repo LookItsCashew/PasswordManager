@@ -1,15 +1,15 @@
 ﻿using System.Xml;
 
-namespace CredentialManager.XML;
+namespace CredentialManager.Credentials;
 
-public class CredentialXMLHandler
+public class CredentialXmlService : ICredentialService
 {
     private readonly string _workingDirectory =
         Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + "vault" + Path.DirectorySeparatorChar;
 
     private FileInfo _credentialFile;
 
-    public CredentialXMLHandler()
+    public CredentialXmlService()
     {
         if (!WorkingDirectoryExists())
         {
@@ -33,7 +33,7 @@ public class CredentialXMLHandler
         
         // Declare metadata of xml document and its root element
         var decl = xml.CreateXmlDeclaration("1.0", "utf-8", null);
-        var root = xml.CreateElement("Credentials");
+        var root = xml.CreateElement("credentials");
         
         xml.AppendChild(decl);
         xml.AppendChild(root);
@@ -50,17 +50,15 @@ public class CredentialXMLHandler
 
             // Get root, so new credential can be added as a child node of it
             var root = xml.DocumentElement!;
-            var cred = xml.CreateElement("Credential");
+            var cred = xml.CreateElement("credential");
+            cred.SetAttribute("nickname", credential.Nickname);
 
             // Create elements for each property in credential 
-            var nickname = xml.CreateElement("Nickname");
-            var username = xml.CreateElement("Username");
-            var password = xml.CreateElement("Password");
-            nickname.InnerText = credential.Nickname;
+            var username = xml.CreateElement("username");
+            var password = xml.CreateElement("password");
             username.InnerText = credential.Username;
             password.InnerText = credential.Password;
-
-            cred.AppendChild(nickname);
+            
             cred.AppendChild(username);
             cred.AppendChild(password);
             root.AppendChild(cred);
@@ -78,5 +76,43 @@ public class CredentialXMLHandler
     public void RemoveCredential(Credential credential)
     {
         
+    }
+    
+    public List<Credential> GetCredentials()
+    {
+        List<Credential> creds = new List<Credential>();
+        try
+        {
+            var xml = new XmlDocument();
+            xml.Load(_credentialFile.FullName);
+
+            // Get each credential node in the file
+            var credNodes = xml.GetElementsByTagName("credential");
+            foreach (XmlNode node in credNodes)
+            {
+                var cred = new Credential();
+                var attr = node.Attributes["nickname"];
+                cred.UpdateNickname(attr.Value);
+                foreach (XmlElement element in node)
+                {
+                    switch (element.Name)
+                    {
+                        case "username":
+                            cred.UpdateUsername(element.InnerText);
+                            break;
+                        case "password":
+                            cred.UpdatePassword(element.InnerText);
+                            break;
+                    }
+                }
+                
+                creds.Add(cred);
+            }
+        }
+        catch (XmlException e)
+        {
+            Console.WriteLine(e.Message);
+        }
+        return creds;
     }
 }
