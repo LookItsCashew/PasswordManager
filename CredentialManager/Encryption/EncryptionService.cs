@@ -38,7 +38,25 @@ public class EncryptionService : IEncryptionService
 
     public string DecryptText(string encryptedText)
     {
-        throw new NotImplementedException();
+        // Convert encrypted text to bytes
+        byte[] encryptedBytes = Convert.FromBase64String(encryptedText);
+        if (encryptedBytes.Length < 16)
+            throw new ArgumentException("Encryption text length invalid.");
+        
+        // Setup aes object
+        using var aes = Aes.Create();
+        aes.Key = _key;
+        byte[] iv = new byte[16];
+        Array.Copy(encryptedBytes, 0, iv, 0, 16);
+        aes.IV = iv;
+    
+        // Put encrypted bytes into memory stream, read from stream after 16-byte iv
+        using var decrypt = aes.CreateDecryptor();
+        using var decryptMemStream = new MemoryStream(encryptedBytes, 16, encryptedBytes.Length - 16);
+        using var decryptCryptoStream = new CryptoStream(decryptMemStream, decrypt, CryptoStreamMode.Read);
+        using var decryptStreamReader = new StreamReader(decryptCryptoStream);
+
+        return decryptStreamReader.ReadToEnd();
     }
 
     public byte[] HashText(string plainText)

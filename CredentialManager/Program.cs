@@ -15,6 +15,7 @@ class Program
         IEncryptionService encryption = new EncryptionService("TestKeyLol");
         var testPwd = "ImaPassw0rd";
         var encryptedPwd = encryption.EncryptText(testPwd);
+        var decryptedPwd = encryption.DecryptText(encryptedPwd);
         var cred = new Credential("test", encryptedPwd, "Test Credential");
         
         if (xml.AddCredential(cred))
