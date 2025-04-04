@@ -1,4 +1,5 @@
 ﻿using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 namespace CredentialManager.Encryption;
@@ -61,11 +62,12 @@ public class EncryptionService : IEncryptionService
 
     public byte[] HashText(string plainText)
     {
-        throw new NotImplementedException();
+        // Convert the plaintext into hashed byte array
+        using var sha = SHA256.Create();
+        var hash = sha.ComputeHash(Encoding.UTF8.GetBytes(plainText));
+
+        return hash;
     }
 
-    public void SaltHash(string salt, byte[] hash)
-    {
-        throw new NotImplementedException();
-    }
+    public string SaltHash(string salt, string plainText) => string.Concat([salt, plainText]);
 }
