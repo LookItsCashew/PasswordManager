@@ -1,9 +1,17 @@
 ﻿using CredentialManager.Credentials;
+using CredentialManager.Encryption;
 
 namespace CredentialManager.User;
 
 public class UserService : IUserService
 {
+    private readonly string _workingDirectory = Directory.GetCurrentDirectory();
+
+    public UserService()
+    {
+        var _userFile = new FileInfo(_workingDirectory + Path.DirectorySeparatorChar + "user.xml");
+    }
+    
     public Credential CreateNewCredential(string username, string password, string nickname)
     {
         throw new NotImplementedException();
