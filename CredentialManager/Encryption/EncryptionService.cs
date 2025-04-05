@@ -15,6 +15,14 @@ public class EncryptionService : IEncryptionService
         _key = sha256.ComputeHash(Encoding.UTF8.GetBytes(key));
         Console.WriteLine($"Key has been generated: {Convert.ToBase64String(_key)}");
     }
+
+    public EncryptionService()
+    {
+        var keyStr = "TestKey";
+        
+        using var sha256 = SHA256.Create();
+        _key = sha256.ComputeHash(Encoding.UTF8.GetBytes(keyStr));
+    }
     
     public string EncryptText(string plainText)
     {
@@ -63,8 +71,8 @@ public class EncryptionService : IEncryptionService
     public byte[] HashText(string plainText)
     {
         // Convert the plaintext into hashed byte array
-        using var sha = SHA256.Create();
-        var hash = sha.ComputeHash(Encoding.UTF8.GetBytes(plainText));
+        using var sha256 = SHA256.Create();
+        var hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(plainText));
 
         return hash;
     }
