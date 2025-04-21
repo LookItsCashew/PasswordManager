@@ -4,7 +4,5 @@
 *credentials.xml
 csproj.*
 
-*\bin\
-*\obj\*
-./CredentialManager/bin/*
-./CredentialManager/obj/*
+*bin*
+*obj*
