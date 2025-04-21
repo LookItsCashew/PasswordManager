@@ -4,11 +4,11 @@ using System.Text;
 
 namespace CredentialManager.Encryption;
 
-public class EncryptionService : IEncryptionService
+public class Encryptor
 {
     private readonly byte[] _key;
 
-    public EncryptionService(string key)
+    public Encryptor(string key)
     {
         using var sha256 = SHA256.Create();
 
@@ -16,7 +16,7 @@ public class EncryptionService : IEncryptionService
         Console.WriteLine($"Key has been generated: {Convert.ToBase64String(_key)}");
     }
 
-    public EncryptionService()
+    public Encryptor()
     {
         var keyStr = "TestKey";
         

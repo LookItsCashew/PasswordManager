@@ -12,7 +12,7 @@ class Program
     static void Main()
     {
         ICredentialService xml = new CredentialXmlService();
-        IEncryptionService encryption = new EncryptionService("TestKeyLol");
+        Encryptor encryption = new Encryptor("TestKeyLol");
         var testPwd = "ImaPassw0rd";
         var encryptedPwd = encryption.EncryptText(testPwd);
         var decryptedPwd = encryption.DecryptText(encryptedPwd);
