@@ -4,41 +4,28 @@ namespace CredentialManager.Credentials;
 
 public class CredentialXmlService : ICredentialService
 {
-    private readonly string _workingDirectory =
+    private static readonly string WorkingDirectory =
         Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + "vault" + Path.DirectorySeparatorChar;
 
-    private FileInfo _credentialFile;
+    private readonly FileInfo _credentialFile = new(WorkingDirectory + @"credentials.xml");
+    
+    private readonly string _credFilePath =  WorkingDirectory + @"credentials.xml";
+    
+    private readonly bool _workingDirectoryExists = Directory.Exists(WorkingDirectory);
 
     public CredentialXmlService()
     {
-        if (!WorkingDirectoryExists())
-        {
-            CreateWorkingDirectory();
-        }
-        _credentialFile = new FileInfo(_workingDirectory + @"credentials.xml");
-        if (!_credentialFile.Exists)
-        {
-            _credentialFile.Create().Close();
-            BuildCredentialDocument();
-        }
+        GenerateFileSystemObjects();
     }
-
-    private bool WorkingDirectoryExists() => Directory.Exists(_workingDirectory);
     
-    private void CreateWorkingDirectory() => Directory.CreateDirectory(_workingDirectory);
-
-    private void BuildCredentialDocument()
+    private void GenerateFileSystemObjects()
     {
-        var xml = new XmlDocument();
+        if (!_workingDirectoryExists)
+        {
+            Directory.CreateDirectory(WorkingDirectory);
+        }
         
-        // Declare metadata of xml document and its root element
-        var decl = xml.CreateXmlDeclaration("1.0", "utf-8", null);
-        var root = xml.CreateElement("credentials");
-        
-        xml.AppendChild(decl);
-        xml.AppendChild(root);
-        
-        xml.Save(_credentialFile.FullName);
+        Xml.CreateXmlFile(_credFilePath, "credentials");
     }
 
     public bool AddCredential(Credential credential)
