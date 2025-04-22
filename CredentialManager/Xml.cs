@@ -2,8 +2,18 @@
 
 namespace CredentialManager;
 
+/// <summary>
+/// Static class that exposes logic for general XML file handling to the application
+/// </summary>
 public static class Xml
 {
+    /// <summary>
+    /// Builds XML document object from given FileInfo object. Creates requested root element.
+    /// </summary>
+    /// <param name="file">The file to save the document to.</param>
+    /// <param name="rootElement">Requested name of document's root element</param>
+    /// <returns>True if document was saved successfully. False otherwise</returns>
+    /// <exception cref="ApplicationException"></exception>
     private static bool BuildDocument(FileInfo file, string rootElement)
     {
         if (!file.Exists)
@@ -32,7 +42,12 @@ public static class Xml
         }
         return false;
     }
-
+    
+    /// <summary>
+    /// Public facing method to create a requested XML file at the provided file path.
+    /// </summary>
+    /// <param name="filePath">Filepath to create file at.</param>
+    /// <param name="rootElement">Name of the requested document root.</param>
     public static void CreateXmlFile(string filePath, string rootElement)
     {
         try
@@ -48,7 +63,12 @@ public static class Xml
         }
     }
 
-    public static XmlDocument? GetXmlFile(string filePath)
+    /// <summary>
+    /// Provides external classes an XML document object loaded with the requested XML file.
+    /// </summary>
+    /// <param name="filePath">Path of XML file</param>
+    /// <returns>XmlDocument object loaded with file</returns>
+    public static XmlDocument? GetXmlDocument(string filePath)
     {
         try
         {
@@ -76,6 +96,12 @@ public static class Xml
         return null;
     }
 
+    /// <summary>
+    /// Provides XmlElement with given ID from document.
+    /// </summary>
+    /// <param name="doc">Document to get the element from.</param>
+    /// <param name="elementId">Element's ID to find.</param>
+    /// <returns></returns>
     public static XmlElement? GetXmlElement(XmlDocument doc, string elementId)
     {
         // get the specified element from the given document 
@@ -83,16 +109,14 @@ public static class Xml
         return element;
     }
 
-    public static void AppendElementToRoot(string filePath, XmlElement child)
+    /// <summary>
+    /// Appends a new XmlElement to a given document. Saved at the provided file path.
+    /// </summary>
+    /// <param name="doc">The document to append the child element to.</param>
+    /// <param name="child">XmlElement to append to the document</param>
+    /// <param name="filePath">Location to save the xml document.</param>
+    public static void AppendElementToRoot(XmlDocument doc, XmlElement child, string filePath)
     {
-        // get the document based on file path
-        var doc = GetXmlFile(filePath);
-        if (doc is null)
-        {
-            Console.WriteLine($"Could not open file {filePath}. It does not exist.");
-            return;
-        }
-        
         try
         {
             // presume if the xml file exists, we've already given it a root element
