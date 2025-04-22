@@ -25,32 +25,21 @@ public class CredentialXmlService : ICredentialService
             Directory.CreateDirectory(WorkingDirectory);
         }
         
-        Xml.CreateXmlFile(_credFilePath, "credentials");
+        if (!File.Exists(_credFilePath))
+        {
+            Xml.CreateXmlFile(_credFilePath, "credentials");
+        }
     }
 
     public bool AddCredential(Credential credential)
     {
         try
         {
-            var xml = new XmlDocument();
-            xml.Load(_credentialFile.FullName);
-
-            // Get root, so new credential can be added as a child node of it
-            var root = xml.DocumentElement!;
-            var cred = xml.CreateElement("credential");
-            cred.SetAttribute("nickname", credential.Nickname);
-
-            // Create elements for each property in credential 
-            var username = xml.CreateElement("username");
-            var password = xml.CreateElement("password");
-            username.InnerText = credential.Username;
-            password.InnerText = credential.Password;
+            // these shouldn't be null, but I am using nullable for error handling
+            var doc = Xml.GetXmlDocument(_credFilePath)!;
+            var element = credential.GetXmlElement(doc);
+            Xml.AppendElementToRoot(doc, element!, _credFilePath);
             
-            cred.AppendChild(username);
-            cred.AppendChild(password);
-            root.AppendChild(cred);
-
-            xml.Save(_credentialFile.FullName);
             return true;
         }
         catch (XmlException e)
@@ -62,43 +51,59 @@ public class CredentialXmlService : ICredentialService
 
     public void RemoveCredential(Credential credential)
     {
-        
+        try
+        {
+            // get list of all credential nodes in document
+            var doc = Xml.GetXmlDocument(_credFilePath)!;
+            var element = credential.GetXmlElement(doc)!;
+            
+            // remove the credential's node from the document
+            doc.RemoveChild(element);
+
+            doc.Save(_credFilePath);
+        }
+        catch (XmlException e)
+        {
+            Console.WriteLine(e.Message);
+        }
     }
     
     public List<Credential> GetCredentials()
     {
-        List<Credential> creds = new List<Credential>();
+        List<Credential> creds = [];
         try
         {
-            var xml = new XmlDocument();
-            xml.Load(_credentialFile.FullName);
+            var doc = Xml.GetXmlDocument(_credFilePath)!;
 
             // Get each credential node in the file
-            var credNodes = xml.GetElementsByTagName("credential");
+            var credNodes = doc.GetElementsByTagName("credential");
             foreach (XmlNode node in credNodes)
             {
-                var cred = new Credential();
-                var attr = node.Attributes["nickname"];
-                cred.UpdateNickname(attr.Value);
+                var attr = node.Attributes!["nickname"];
+                var username = "";
+                var password = "";
+                var nickname = attr!.InnerText;
                 foreach (XmlElement element in node)
                 {
                     switch (element.Name)
                     {
                         case "username":
-                            cred.UpdateUsername(element.InnerText);
+                            username = element.InnerText;
                             break;
                         case "password":
-                            cred.UpdatePassword(element.InnerText);
+                            password = element.InnerText;
                             break;
                     }
                 }
                 
+                // add new credential object to list
+                Credential cred = new(username, password, nickname);
                 creds.Add(cred);
             }
         }
         catch (XmlException e)
         {
-            Console.WriteLine(e.Message);
+            Console.WriteLine("Couldn't read credentials from xml.");
         }
         return creds;
     }
