@@ -8,6 +8,24 @@ namespace CredentialManager;
 public static class Xml
 {
     /// <summary>
+    /// Saves the current state of the XML document object to given file. 
+    /// </summary>
+    /// <param name="doc">The document requested to be saved.</param>
+    /// <param name="path">The file path where the document should be saved.</param>
+    public static void SaveXmlDocument(XmlDocument doc, string path)
+    {
+        try
+        {
+            doc.Save(path);
+        }
+        catch (XmlException e)
+        {
+            Console.WriteLine("Malformed XML Document. Could not save it to file.");
+            Console.WriteLine(e.Message);
+        }
+    }
+    
+    /// <summary>
     /// Builds XML document object from given FileInfo object. Creates requested root element.
     /// </summary>
     /// <param name="file">The file to save the document to.</param>
@@ -114,17 +132,15 @@ public static class Xml
     /// </summary>
     /// <param name="doc">The document to append the child element to.</param>
     /// <param name="child">XmlElement to append to the document</param>
-    /// <param name="filePath">Location to save the xml document.</param>
-    public static void AppendElementToRoot(XmlDocument doc, XmlElement child, string filePath)
+    public static void AppendElementToRoot(XmlDocument doc, XmlElement child)
     {
         try
         {
             // presume if the xml file exists, we've already given it a root element
             var root = doc.DocumentElement!;
 
-            // append child element to root and save the document. 
+            // append child element to root
             root.AppendChild(child);
-            doc.Save(filePath);
         }
         catch (Exception e)
         {

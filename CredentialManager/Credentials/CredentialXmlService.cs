@@ -2,16 +2,12 @@
 
 namespace CredentialManager.Credentials;
 
-public class CredentialXmlService : ICredentialService
+public class CredentialXmlService
 {
     private static readonly string WorkingDirectory =
         Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + "vault" + Path.DirectorySeparatorChar;
-
-    private readonly FileInfo _credentialFile = new(WorkingDirectory + @"credentials.xml");
     
-    private readonly string _credFilePath =  WorkingDirectory + @"credentials.xml";
-    
-    private readonly bool _workingDirectoryExists = Directory.Exists(WorkingDirectory);
+    public string CredFilePath { get; } = WorkingDirectory + @"credentials.xml";
 
     public CredentialXmlService()
     {
@@ -20,25 +16,24 @@ public class CredentialXmlService : ICredentialService
     
     private void GenerateFileSystemObjects()
     {
-        if (!_workingDirectoryExists)
+        if (!Directory.Exists(WorkingDirectory))
         {
             Directory.CreateDirectory(WorkingDirectory);
         }
         
-        if (!File.Exists(_credFilePath))
+        if (!File.Exists(CredFilePath))
         {
-            Xml.CreateXmlFile(_credFilePath, "credentials");
+            Xml.CreateXmlFile(CredFilePath, "credentials");
         }
     }
 
-    public bool AddCredential(Credential credential)
+    public bool AddCredentialToDocument(XmlDocument doc, Credential credential)
     {
         try
         {
-            // these shouldn't be null, but I am using nullable for error handling
-            var doc = Xml.GetXmlDocument(_credFilePath)!;
-            var element = credential.GetXmlElement(doc);
-            Xml.AppendElementToRoot(doc, element!, _credFilePath);
+            // this shouldn't be null, but I am using nullable for error handling
+            var element = credential.GetXmlElement(doc)!;
+            Xml.AppendElementToRoot(doc, element);
             
             return true;
         }
@@ -49,18 +44,18 @@ public class CredentialXmlService : ICredentialService
         }
     }
 
-    public void RemoveCredential(Credential credential)
+    public void RemoveCredentialFromDocument(XmlDocument doc, XmlElement element)
     {
         try
         {
-            // get list of all credential nodes in document
-            var doc = Xml.GetXmlDocument(_credFilePath)!;
-            var element = credential.GetXmlElement(doc)!;
+            // get xml element of the credential
+            
+            
+            // the credential element is a child of the document's root
+            var root = doc.DocumentElement!;
             
             // remove the credential's node from the document
-            doc.RemoveChild(element);
-
-            doc.Save(_credFilePath);
+            root.RemoveChild(element);
         }
         catch (XmlException e)
         {
@@ -73,32 +68,35 @@ public class CredentialXmlService : ICredentialService
         List<Credential> creds = [];
         try
         {
-            var doc = Xml.GetXmlDocument(_credFilePath)!;
+            var doc = Xml.GetXmlDocument(CredFilePath)!;
 
             // Get each credential node in the file
             var credNodes = doc.GetElementsByTagName("credential");
-            foreach (XmlNode node in credNodes)
+            if (credNodes.Count > 0)
             {
-                var attr = node.Attributes!["nickname"];
-                var username = "";
-                var password = "";
-                var nickname = attr!.InnerText;
-                foreach (XmlElement element in node)
+                foreach (XmlNode node in credNodes)
                 {
-                    switch (element.Name)
+                    var attr = node.Attributes!["nickname"];
+                    var username = "";
+                    var password = "";
+                    var nickname = attr!.InnerText;
+                    foreach (XmlElement element in node)
                     {
-                        case "username":
-                            username = element.InnerText;
-                            break;
-                        case "password":
-                            password = element.InnerText;
-                            break;
+                        switch (element.Name)
+                        {
+                            case "username":
+                                username = element.InnerText;
+                                break;
+                            case "password":
+                                password = element.InnerText;
+                                break;
+                        }
                     }
-                }
                 
-                // add new credential object to list
-                Credential cred = new(username, password, nickname);
-                creds.Add(cred);
+                    // add new credential object to list
+                    //Credential cred = new(username, password, nickname);
+                    //creds.Add(cred);
+                }
             }
         }
         catch (XmlException e)
