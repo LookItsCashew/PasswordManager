@@ -16,7 +16,12 @@ class Program
         var testPwd = "ImaPassw0rd";
         var encryptedPwd = encryption.EncryptText(testPwd);
         var decryptedPwd = encryption.DecryptText(encryptedPwd);
-        /*var cred = new Credential("test", encryptedPwd, "Test Credential");
+        
+        var cred = new Credential(
+            "test", 
+            encryptedPwd, 
+            "Test Credential", 
+            cxs.Identifier.GetCurrentIdentifier());
 
         var credDoc = Xml.GetXmlDocument(cxs.CredFilePath);
         if (credDoc != null && cxs.AddCredentialToDocument(credDoc, cred))
@@ -27,7 +32,7 @@ class Program
         else
         {
             Console.WriteLine("Failed to Add Credential");
-        }*/
+        }
         
         var credentials = cxs.GetCredentials();
         foreach (var c in credentials)

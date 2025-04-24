@@ -25,6 +25,7 @@ public class Credential(string username, string password, string nickname, int i
             var passwordElement = doc.CreateElement("password");
 
             // add id and nickname attributes to cred element
+            credElement.SetAttribute("id", Id.ToString());
             credElement.SetAttribute("nickname", Nickname);
             
             // set value of elements

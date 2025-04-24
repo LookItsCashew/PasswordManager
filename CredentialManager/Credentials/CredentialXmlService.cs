@@ -7,6 +7,8 @@ public class CredentialXmlService
     private static readonly string WorkingDirectory =
         Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + "vault" + Path.DirectorySeparatorChar;
     
+    public readonly CredentialIdentifier Identifier =  new CredentialIdentifier();
+    
     public string CredFilePath { get; } = WorkingDirectory + @"credentials.xml";
 
     public CredentialXmlService()
@@ -34,6 +36,7 @@ public class CredentialXmlService
             // this shouldn't be null, but I am using nullable for error handling
             var element = credential.GetXmlElement(doc)!;
             Xml.AppendElementToRoot(doc, element);
+            Identifier.IncrementIdentifier();
             
             return true;
         }
