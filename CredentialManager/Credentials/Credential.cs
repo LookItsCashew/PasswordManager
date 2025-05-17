@@ -1,22 +1,13 @@
-﻿namespace CredentialManager.Credentials;
+﻿using System.Xml;
 
-public class Credential
+namespace CredentialManager.Credentials;
+
+public class Credential(string username, string password, string nickname, int id)
 {
-    public string? Username { get; private set; }
-    public string? Password { get; private set; }
-    public string? Nickname { get; private set; }
-
-    public Credential()
-    {
-        
-    }
-
-    public Credential(string username, string password, string nickname)
-    {
-        Username = username;
-        Password = password;
-        Nickname = nickname;
-    }
+    public int Id { get; } = id;
+    public string Username { get; private set; } = username;
+    public string Password { get; private set; } = password;
+    public string Nickname { get; private set; } = nickname;
 
     public void UpdateUsername(string newUsername) => Username = newUsername;
     

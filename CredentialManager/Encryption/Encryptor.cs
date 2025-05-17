@@ -1,14 +1,13 @@
 ﻿using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 namespace CredentialManager.Encryption;
 
-public class EncryptionService : IEncryptionService
+public class Encryptor
 {
     private readonly byte[] _key;
 
-    public EncryptionService(string key)
+    public Encryptor(string key)
     {
         using var sha256 = SHA256.Create();
 
@@ -16,14 +15,23 @@ public class EncryptionService : IEncryptionService
         Console.WriteLine($"Key has been generated: {Convert.ToBase64String(_key)}");
     }
 
-    public EncryptionService()
+    /// <summary>
+    /// Generates Encryptor with default, non-user specified key
+    /// </summary>
+    public Encryptor()
     {
-        var keyStr = "TestKey";
+        // TODO: replace this with an environment variable
+        var keyStr = "LpJGdyo1";
         
         using var sha256 = SHA256.Create();
         _key = sha256.ComputeHash(Encoding.UTF8.GetBytes(keyStr));
     }
     
+    /// <summary>
+    /// Encrypts plain text into encrypted text based on key using SHA256
+    /// </summary>
+    /// <param name="plainText">The plan text to be encrypted</param>
+    /// <returns>The encrypted representation of plain text</returns>
     public string EncryptText(string plainText)
     {
         // Setup aes object
@@ -45,6 +53,12 @@ public class EncryptionService : IEncryptionService
         return Convert.ToBase64String(encryptMemStream.ToArray());
     }
 
+    /// <summary>
+    /// Decrypts encrypted text based on key using SHA256 back to plain text
+    /// </summary>
+    /// <param name="encryptedText">The encrypted version of text</param>
+    /// <returns>The decrypted plain text</returns>
+    /// <exception cref="ArgumentException">Encryption text length is not valid</exception>
     public string DecryptText(string encryptedText)
     {
         // Convert encrypted text to bytes
@@ -68,6 +82,11 @@ public class EncryptionService : IEncryptionService
         return decryptStreamReader.ReadToEnd();
     }
 
+    /// <summary>
+    /// Generates hashed version of plain text
+    /// </summary>
+    /// <param name="plainText">Plain text to be hashed</param>
+    /// <returns>256 hash of plain text in byte array</returns>
     public byte[] HashText(string plainText)
     {
         // Convert the plaintext into hashed byte array
@@ -76,6 +95,12 @@ public class EncryptionService : IEncryptionService
 
         return hash;
     }
-
+    
+    /// <summary>
+    /// Adds salt to plain text, which will be hashed
+    /// </summary>
+    /// <param name="salt">The salt to add to text</param>
+    /// <param name="plainText">Plain text that will be salted</param>
+    /// <returns></returns>
     public string SaltHash(string salt, string plainText) => string.Concat([salt, plainText]);
 }

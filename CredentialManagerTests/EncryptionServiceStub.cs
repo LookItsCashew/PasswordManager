@@ -2,7 +2,7 @@ using CredentialManager.Encryption;
 
 namespace CredentialManagerTests;
 
-public class EncryptionServiceStub : IEncryptionService
+public class EncryptionServiceStub
 {
     public string EncryptText(string plainText)
     {

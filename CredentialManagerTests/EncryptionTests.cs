@@ -11,7 +11,7 @@ public class EncryptionTests
     [Fact]
     public void SaltingAddsTextToString()
     {
-        IEncryptionService esCrypto = new EncryptionService(_key);
+        Encryptor esCrypto = new Encryptor(_key);
         var strOne = "Hello";
         var strTwo = "World";
         
@@ -22,7 +22,7 @@ public class EncryptionTests
     [Fact]
     public void SaltedHashIsDifferentThanHash()
     {
-        IEncryptionService esCrypto = new EncryptionService(_key);
+        Encryptor esCrypto = new Encryptor(_key);
         var saltedText = "HelloWorld";
         var unsaltedText = "World";
         
@@ -32,7 +32,7 @@ public class EncryptionTests
     [Fact]
     public void HashingDifferentTextResultsInSameHash()
     {
-        IEncryptionService esCrypto = new EncryptionService(_key);
+        Encryptor esCrypto = new Encryptor(_key);
         
         Assert.Equal(esCrypto.HashText("testhash"), esCrypto.HashText("testhash"));
     }
