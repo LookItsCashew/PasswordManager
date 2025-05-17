@@ -1,5 +1,4 @@
-﻿using System;
-using System.Xml;
+﻿using System.Xml;
 using CredentialManager.Utils;
 
 namespace CredentialManager.Encryption;
@@ -8,7 +7,7 @@ public class Keys
 {
     private readonly string _keyFilePath = Global.DefaultVaultFolderPath + "keys.xml";
 
-    private static Keys? _instance = null;
+    private static Keys? _instance;
     
     private readonly XmlDocument _keyDocument;
     

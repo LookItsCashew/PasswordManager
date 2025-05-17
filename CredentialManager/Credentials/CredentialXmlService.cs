@@ -69,8 +69,8 @@ public class CredentialXmlService
             credElement.SetAttribute("nickname", credential.Nickname);
             
             // set value of elements
-            usernameElement.InnerText = credential.Username!;
-            passwordElement.InnerText = credential.Password!;
+            usernameElement.InnerText = credential.Username;
+            passwordElement.InnerText = credential.Password;
 
             // append child elements to credential element, then return credential element
             var appendedUsername = credElement.AppendChild(usernameElement);
@@ -95,11 +95,19 @@ public class CredentialXmlService
         try
         {
             // get each credential element
-            var credElement = _credentialDocument.GetElementById(credential.Id.ToString())!;
-            
-            // the credential element is a child of the document's root
+            var credElements = _credentialDocument.GetElementsByTagName("credential");
             var root = _credentialDocument.DocumentElement!;
-            root.RemoveChild(credElement);
+
+            foreach (XmlElement el in credElements)
+            {
+                // very safe to presume there is an "id" attribute
+                var credId = el.GetAttribute("id");
+                if (credId == credential.Id.ToString())
+                {
+                    root.RemoveChild(el);
+                    break;
+                }
+            }
             
             Xml.SaveXmlDocument(_credentialDocument, _credFilePath);
         }
@@ -150,7 +158,8 @@ public class CredentialXmlService
         }
         catch (XmlException e)
         {
-            Console.WriteLine("Couldn't read credentials from xml.");
+            Console.Error.WriteLine("Couldn't read credentials from xml.\n\n" + 
+                                    e.Message);
         }
         return creds;
     }

@@ -7,7 +7,7 @@ public class Identifiers
     private readonly string _identifierFilePath = 
         Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + "identifiers.xml";
 
-    private static Identifiers? _instance = null;
+    private static Identifiers? _instance;
     
     private readonly XmlDocument _identifierDocument;
     

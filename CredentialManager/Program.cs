@@ -4,7 +4,7 @@ using CredentialManager.Utils;
 
 namespace CredentialManager;
 
-class Program
+static class Program
 {
     static void Main()
     {
@@ -23,7 +23,7 @@ class Program
         Console.WriteLine(cxs.AddCredentialToDocument(cred)
             ? "Successfully Added Credential"
             : "Failed to Add Credential");
-
+        
         var credentials = cxs.GetCredentials();
         foreach (var c in credentials)
         {
