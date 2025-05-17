@@ -128,7 +128,7 @@ public static class Xml
     }
 
     /// <summary>
-    /// Appends a new XmlElement to a given document. Saved at the provided file path.
+    /// Appends a new XmlElement to a given document.
     /// </summary>
     /// <param name="doc">The document to append the child element to.</param>
     /// <param name="child">XmlElement to append to the document</param>
