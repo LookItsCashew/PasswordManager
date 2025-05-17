@@ -7,9 +7,9 @@ public static class Global
     public static string DefaultVaultFolderPath => 
         Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + "vault" + Path.DirectorySeparatorChar;
     
-    public static readonly Identifiers Identifiers = Identifiers.Instance;
+    public static readonly Identifiers Identifiers;
 
-    public static readonly Keys Keys = Keys.Instance;
+    public static readonly Keys Keys;
     
     static Global()
     {
@@ -17,5 +17,8 @@ public static class Global
         {
             Directory.CreateDirectory(DefaultVaultFolderPath);
         }
+        
+        Identifiers = Identifiers.Instance;
+        Keys = Keys.Instance;
     }
 }

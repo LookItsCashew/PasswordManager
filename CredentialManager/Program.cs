@@ -20,17 +20,10 @@ class Program
             "Test Credential",
             Global.Identifiers.GetCurrentIdentifier("credentials"));
 
-        var credDoc = Xml.GetXmlDocument(cxs.CredFilePath);
-        if (credDoc != null && cxs.AddCredentialToDocument(credDoc, cred))
-        {
-            Xml.SaveXmlDocument(credDoc, cxs.CredFilePath);
-            Console.WriteLine("Successfully Added Credential");
-        }
-        else
-        {
-            Console.WriteLine("Failed to Add Credential");
-        }
-        
+        Console.WriteLine(cxs.AddCredentialToDocument(cred)
+            ? "Successfully Added Credential"
+            : "Failed to Add Credential");
+
         var credentials = cxs.GetCredentials();
         foreach (var c in credentials)
         {
