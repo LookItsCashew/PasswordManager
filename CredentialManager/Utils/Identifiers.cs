@@ -8,31 +8,9 @@ public class Identifiers
         Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + "identifiers.xml";
 
     private static Identifiers? _instance = null;
-
-    private Identifiers()
-    {
-        if (!File.Exists(_identifierFilePath))
-        {
-            Xml.CreateXmlFile(_identifierFilePath, "identifiers");
-            
-            var doc = Xml.GetXmlDocument(_identifierFilePath)!;
-            var root = doc.DocumentElement!;
-            
-            // create xml elements for each identifier in the document
-            var keys = doc.CreateElement("keys");
-            var creds = doc.CreateElement("credentials");
-            root.AppendChild(keys);
-            root.AppendChild(creds);
-            
-            // set initial value to 0 for each identifier
-            keys.InnerText = "0";
-            creds.InnerText = "0";
-            
-            doc.Save(_identifierFilePath);
-        }
-        
-    }
-
+    
+    private readonly XmlDocument _identifierDocument;
+    
     public static Identifiers Instance
     {
         get
@@ -45,6 +23,29 @@ public class Identifiers
         }
     }
 
+    private Identifiers()
+    {
+        if (!File.Exists(_identifierFilePath))
+        {
+            Xml.CreateXmlFile(_identifierFilePath, "identifiers");
+            
+            _identifierDocument = Xml.GetXmlDocument(_identifierFilePath)!;
+            
+            // create xml elements for each identifier in the document
+            var keys = _identifierDocument.CreateElement("keys");
+            var creds = _identifierDocument.CreateElement("credentials");
+            Xml.AppendElementToRoot(_identifierDocument, keys);
+            Xml.AppendElementToRoot(_identifierDocument, creds);
+            
+            // set initial value to 0 for each identifier
+            keys.InnerText = "0";
+            creds.InnerText = "0";
+            
+            Xml.SaveXmlDocument(_identifierDocument, _identifierFilePath);
+        }
+        _identifierDocument = Xml.GetXmlDocument(_identifierFilePath)!;
+    }
+
     /// <summary>
     /// Retrieves the current identifier from file.
     /// This will only be used when the Identifier object is constructed.
@@ -54,13 +55,9 @@ public class Identifiers
     public int GetCurrentIdentifier(string idName)
     {
         int result = 0;
-        var doc = Xml.GetXmlDocument(_identifierFilePath)!;
         try
         {
-            // load id document into mem
-            doc.Load(_identifierFilePath);
-
-            var root = doc.DocumentElement!;
+            var root = _identifierDocument.DocumentElement!;
             var child = root.GetElementsByTagName(idName)[0]!;
             result = int.Parse(child.InnerText);
         }
@@ -70,7 +67,7 @@ public class Identifiers
         }
         finally
         {
-            doc.Save(_identifierFilePath);
+            Xml.SaveXmlDocument(_identifierDocument, _identifierFilePath);
         }
         return result;
     }
@@ -80,13 +77,9 @@ public class Identifiers
     /// </summary>
     public void IncrementIdentifier(string idName)
     {
-        var doc = Xml.GetXmlDocument(_identifierFilePath)!;
         try
         {
-            // load id document into mem
-            doc.Load(_identifierFilePath);
-
-            var root = doc.DocumentElement!;
+            var root = _identifierDocument.DocumentElement!;
             var child = root.GetElementsByTagName(idName)[0]!;
             int newId = int.Parse(child.InnerText) + 1;
 
@@ -99,7 +92,7 @@ public class Identifiers
         }
         finally
         {
-            doc.Save(_identifierFilePath);
+            Xml.SaveXmlDocument(_identifierDocument, _identifierFilePath);
         }
     }
 }

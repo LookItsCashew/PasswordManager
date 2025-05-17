@@ -9,6 +9,20 @@ public class Keys
     private readonly string _keyFilePath = Global.DefaultVaultFolderPath + "keys.xml";
 
     private static Keys? _instance = null;
+    
+    private readonly XmlDocument _keyDocument;
+    
+    public static Keys Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                _instance = new Keys();
+            }
+            return _instance;
+        }
+    }
 
     private Keys()
     {
@@ -17,40 +31,43 @@ public class Keys
             Xml.CreateXmlFile(_keyFilePath, "keys");
             var keyText = GenerateKeyBase();
             
-            var doc = Xml.GetXmlDocument(_keyFilePath)!;
-            var root = doc.DocumentElement!;
+            _keyDocument = Xml.GetXmlDocument(_keyFilePath)!;
             
             // create root element for keys
-            var key = doc.CreateElement("key");
+            var keyElement = _keyDocument.CreateElement("key");
             
             // set key id
-            key.SetAttribute("id", 
+            keyElement.SetAttribute("id", 
                 Global.Identifiers.GetCurrentIdentifier("keys")
                     .ToString());
-            root.AppendChild(key);
+            Xml.AppendElementToRoot(_keyDocument, keyElement);
             
             // set initial value to guid-based key text, encrypted
-            Encryptor encryption = new Encryptor();  // uses a default key encryptor to encrypt the keys initially
+            Encryptor encryption = new Encryptor();  // uses a default encryptor to encrypt the keys
             
-            key.InnerText = encryption.EncryptText(keyText.ToString());
+            keyElement.InnerText = encryption.EncryptText(keyText.ToString());
             
-            doc.Save(_keyFilePath);
+            Xml.SaveXmlDocument(_keyDocument, _keyFilePath);
             
             // increment the key identifier
             Global.Identifiers.IncrementIdentifier("keys");
         }
+        _keyDocument = Xml.GetXmlDocument(_keyFilePath)!;
     }
 
     private Guid GenerateKeyBase() => Guid.NewGuid();
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     public string GetKeyById(string id)
     {
         string rtnValue = "";
         try
-        {  
-            var doc = Xml.GetXmlDocument(_keyFilePath)!;
-            
-            var keyElements = doc.GetElementsByTagName("key");
+        {
+            var keyElements = _keyDocument.GetElementsByTagName("key");
 
             foreach (XmlElement el in keyElements)
             {
@@ -72,18 +89,4 @@ public class Keys
         }
         return rtnValue;
     }
-
-    public static Keys Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = new Keys();
-            }
-            return _instance;
-        }
-    }
-    
-    
 }
