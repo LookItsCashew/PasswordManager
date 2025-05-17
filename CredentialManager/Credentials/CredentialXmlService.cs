@@ -1,34 +1,26 @@
 ﻿using System.Xml;
+using CredentialManager.Utils;
 
 namespace CredentialManager.Credentials;
 
 public class CredentialXmlService
 {
-    private static readonly string WorkingDirectory =
-        Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + "vault" + Path.DirectorySeparatorChar;
-    
-    public readonly CredentialIdentifier Identifier =  new CredentialIdentifier();
-    
-    public string CredFilePath { get; } = WorkingDirectory + @"credentials.xml";
+    public string CredFilePath { get; } = Global.DefaultVaultFolderPath + @"credentials.xml";
 
     public CredentialXmlService()
     {
-        GenerateFileSystemObjects();
-    }
-    
-    private void GenerateFileSystemObjects()
-    {
-        if (!Directory.Exists(WorkingDirectory))
-        {
-            Directory.CreateDirectory(WorkingDirectory);
-        }
-        
         if (!File.Exists(CredFilePath))
         {
             Xml.CreateXmlFile(CredFilePath, "credentials");
         }
     }
-
+    
+    /// <summary>
+    /// Appends a new Xml credential element to the root of the vault file.
+    /// </summary>
+    /// <param name="doc">The document object to append credential to the root.</param>
+    /// <param name="credential">Credential that will be added to the vault.</param>
+    /// <returns>Whether the credential was added to the file successfully.</returns>
     public bool AddCredentialToDocument(XmlDocument doc, Credential credential)
     {
         try
@@ -36,7 +28,7 @@ public class CredentialXmlService
             // this shouldn't be null, but I am using nullable for error handling
             var element = credential.GetXmlElement(doc)!;
             Xml.AppendElementToRoot(doc, element);
-            Identifier.IncrementIdentifier();
+            Global.Identifiers.IncrementIdentifier("credentials");
             
             return true;
         }
@@ -46,7 +38,7 @@ public class CredentialXmlService
             return false;
         }
     }
-
+    
     public void RemoveCredentialFromDocument(XmlDocument doc, XmlElement element)
     {
         try
@@ -66,6 +58,11 @@ public class CredentialXmlService
         }
     }
     
+    /// <summary>
+    /// Retrieves each credential from the file.
+    /// </summary>
+    /// <returns>List of Credential objects.
+    /// Returns empty list if there are no credentials added yet.</returns>
     public List<Credential> GetCredentials()
     {
         List<Credential> creds = [];
@@ -79,10 +76,10 @@ public class CredentialXmlService
             {
                 foreach (XmlNode node in credNodes)
                 {
-                    var attr = node.Attributes!["nickname"];
                     var username = "";
                     var password = "";
-                    var nickname = attr!.InnerText;
+                    var nickname = node!.Attributes!["nickname"]!.Value;
+                    var id = int.Parse(node.Attributes["id"]!.Value);
                     foreach (XmlElement element in node)
                     {
                         switch (element.Name)
@@ -97,8 +94,8 @@ public class CredentialXmlService
                     }
                 
                     // add new credential object to list
-                    //Credential cred = new(username, password, nickname);
-                    //creds.Add(cred);
+                    Credential cred = new(username, password, nickname, id);
+                    creds.Add(cred);
                 }
             }
         }

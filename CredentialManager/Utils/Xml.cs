@@ -1,6 +1,6 @@
 ﻿using System.Xml;
 
-namespace CredentialManager;
+namespace CredentialManager.Utils;
 
 /// <summary>
 /// Static class that exposes logic for general XML file handling to the application
@@ -120,7 +120,7 @@ public static class Xml
     /// <param name="doc">Document to get the element from.</param>
     /// <param name="elementId">Element's ID to find.</param>
     /// <returns></returns>
-    public static XmlElement? GetXmlElement(XmlDocument doc, string elementId)
+    public static XmlElement? GetXmlElementById(XmlDocument doc, string elementId)
     {
         // get the specified element from the given document 
         var element = doc.GetElementById(elementId);

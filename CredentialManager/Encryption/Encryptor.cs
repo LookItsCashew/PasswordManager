@@ -1,5 +1,4 @@
 ﻿using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 namespace CredentialManager.Encryption;
@@ -18,7 +17,8 @@ public class Encryptor
 
     public Encryptor()
     {
-        var keyStr = "TestKey";
+        // TODO: replace this with an environment variable
+        var keyStr = "LpJGdyo1";
         
         using var sha256 = SHA256.Create();
         _key = sha256.ComputeHash(Encoding.UTF8.GetBytes(keyStr));

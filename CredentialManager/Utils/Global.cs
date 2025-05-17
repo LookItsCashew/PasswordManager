@@ -1,0 +1,21 @@
+﻿using CredentialManager.Encryption;
+
+namespace CredentialManager.Utils;
+
+public static class Global
+{
+    public static string DefaultVaultFolderPath => 
+        Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + "vault" + Path.DirectorySeparatorChar;
+    
+    public static readonly Identifiers Identifiers = Identifiers.Instance;
+
+    public static readonly Keys Keys = Keys.Instance;
+    
+    static Global()
+    {
+        if (!Directory.Exists(DefaultVaultFolderPath))
+        {
+            Directory.CreateDirectory(DefaultVaultFolderPath);
+        }
+    }
+}
