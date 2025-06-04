@@ -1,7 +1,8 @@
 ﻿using System.Xml;
 using CredentialManager.Utils;
+using CredentialManager.Models;
 
-namespace CredentialManager.Credentials;
+namespace CredentialManager.Services;
 
 public class CredentialXmlService : ICredentialService
 {

@@ -1,4 +1,4 @@
-using CredentialManager.Encryption;
+using CredentialManager.Services;
 
 namespace CredentialManagerTests;
 

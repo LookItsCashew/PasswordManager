@@ -1,7 +1,7 @@
 ﻿using System.Xml;
-using CredentialManager.Utils;
+using CredentialManager.Services;
 
-namespace CredentialManager.Encryption;
+namespace CredentialManager.Utils;
 
 public class Keys
 {
@@ -42,7 +42,7 @@ public class Keys
             Xml.AppendElementToRoot(_keyDocument, keyElement);
             
             // set initial value to guid-based key text, encrypted
-            Encryptor encryption = new Encryptor();  // uses a default encryptor to encrypt the keys
+            EncryptionService encryption = new EncryptionService();  // uses a default encryptor to encrypt the keys
             
             keyElement.InnerText = encryption.EncryptText(keyText.ToString());
             
@@ -75,7 +75,7 @@ public class Keys
                 if (keyId == id)
                 {
                     // decrypt the keys
-                    Encryptor encryption = new Encryptor();  // uses a default key encryptor to encrypt the keys initially
+                    EncryptionService encryption = new EncryptionService();  // uses a default key encryptor to encrypt the keys initially
                 
                     rtnValue = encryption.DecryptText(el.InnerText);
                     break;

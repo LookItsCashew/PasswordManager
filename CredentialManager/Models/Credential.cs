@@ -1,6 +1,4 @@
-﻿using System.Xml;
-
-namespace CredentialManager.Credentials;
+﻿namespace CredentialManager.Models;
 
 public class Credential(string username, string password, string nickname, int id)
 {

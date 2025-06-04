@@ -1,4 +1,6 @@
-﻿namespace CredentialManager.Credentials;
+﻿using CredentialManager.Models;
+
+namespace CredentialManager.Services;
 
 public interface ICredentialService
 {

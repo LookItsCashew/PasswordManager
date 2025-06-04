@@ -1,4 +1,4 @@
-using CredentialManager.Encryption;
+using CredentialManager.Services;
 using CredentialManager.User;
 
 namespace CredentialManagerTests;
@@ -10,7 +10,7 @@ public class EncryptionTests
     [Fact]
     public void SaltingAddsTextToString()
     {
-        Encryptor esCrypto = new Encryptor(_key);
+        EncryptionService esCrypto = new EncryptionService(_key);
         var strOne = "Hello";
         var strTwo = "World";
         
@@ -21,7 +21,7 @@ public class EncryptionTests
     [Fact]
     public void SaltedHashIsDifferentThanHash()
     {
-        Encryptor esCrypto = new Encryptor(_key);
+        EncryptionService esCrypto = new EncryptionService(_key);
         var saltedText = "HelloWorld";
         var unsaltedText = "World";
         
@@ -31,7 +31,7 @@ public class EncryptionTests
     [Fact]
     public void HashingDifferentTextResultsInSameHash()
     {
-        Encryptor esCrypto = new Encryptor(_key);
+        EncryptionService esCrypto = new EncryptionService(_key);
         
         Assert.Equal(esCrypto.HashText("testhash"), esCrypto.HashText("testhash"));
     }

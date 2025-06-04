@@ -1,13 +1,13 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace CredentialManager.Encryption;
+namespace CredentialManager.Services;
 
-public class Encryptor
+public class EncryptionService
 {
     private readonly byte[] _key;
 
-    public Encryptor(string key)
+    public EncryptionService(string key)
     {
         using var sha256 = SHA256.Create();
 
@@ -18,7 +18,7 @@ public class Encryptor
     /// <summary>
     /// Generates Encryptor with default, non-user specified key
     /// </summary>
-    public Encryptor()
+    public EncryptionService()
     {
         // TODO: replace this with an environment variable
         var keyStr = "LpJGdyo1";
