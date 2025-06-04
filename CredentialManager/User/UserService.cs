@@ -1,25 +1,25 @@
-﻿using CredentialManager.Credentials;
-using CredentialManager.Encryption;
+﻿using System.Xml;
+using CredentialManager.Utils;
 
 namespace CredentialManager.User;
 
-public class UserService : IUserService
+public class UserService
 {
-    private readonly string _workingDirectory = Directory.GetCurrentDirectory();
+    private readonly string _userFilePath = Directory.GetCurrentDirectory() + 
+                                                Path.DirectorySeparatorChar + "user.xml";
+
+    private readonly XmlDocument _userDocument;
 
     public UserService()
     {
-        var _userFile = new FileInfo(_workingDirectory + Path.DirectorySeparatorChar + "user.xml");
-    }
-    
-    public Credential CreateNewCredential(string username, string password, string nickname)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void DeleteCredential(Credential credential)
-    {
-        throw new NotImplementedException();
+        if (!File.Exists(_userFilePath))
+        {
+            // create the file
+            Xml.CreateXmlFile(_userFilePath, "user");
+            
+            
+        }
+        _userDocument = Xml.GetXmlDocument(_userFilePath)!;
     }
 
     public bool LogIn(string username, string password)
@@ -28,11 +28,6 @@ public class UserService : IUserService
     }
 
     public bool Register(string username, string password)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void UpdateCredential(Credential credential, string newUsername = "", string newPassword = "")
     {
         throw new NotImplementedException();
     }

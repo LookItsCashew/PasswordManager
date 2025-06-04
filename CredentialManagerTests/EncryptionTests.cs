@@ -1,6 +1,5 @@
 using CredentialManager.Encryption;
 using CredentialManager.User;
-using System.Security.Cryptography;
 
 namespace CredentialManagerTests;
 
@@ -40,6 +39,6 @@ public class EncryptionTests
     [Fact]
     public void LoginReturnsFalseWithWrongPassword()
     {
-        IUserService usUser = new UserService();
+        UserService usUser = new UserService();
     }
 }

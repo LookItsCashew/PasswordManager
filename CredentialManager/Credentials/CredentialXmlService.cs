@@ -3,7 +3,7 @@ using CredentialManager.Utils;
 
 namespace CredentialManager.Credentials;
 
-public class CredentialXmlService
+public class CredentialXmlService : ICredentialService
 {
     private readonly string _credFilePath = Global.DefaultVaultFolderPath + @"credentials.xml";
 
@@ -23,7 +23,7 @@ public class CredentialXmlService
     /// </summary>
     /// <param name="credential">Credential that will be added to the vault.</param>
     /// <returns>Whether the credential was added to the file successfully.</returns>
-    public bool AddCredentialToDocument(Credential credential)
+    public bool AddCredential(Credential credential)
     {
         try
         {
@@ -90,7 +90,7 @@ public class CredentialXmlService
     /// 
     /// </summary>
     /// <param name="credential"></param>
-    public void RemoveCredentialFromDocumentById(Credential credential)
+    public void RemoveCredentialById(Credential credential)
     {
         try
         {
