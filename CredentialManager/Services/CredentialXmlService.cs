@@ -24,7 +24,7 @@ public class CredentialXmlService : ICredentialService
     /// </summary>
     /// <param name="credential">Credential that will be added to the vault.</param>
     /// <returns>Whether the credential was added to the file successfully.</returns>
-    public bool AddCredential(Credential credential)
+    public void AddCredential(Credential credential)
     {
         try
         {
@@ -38,8 +38,6 @@ public class CredentialXmlService : ICredentialService
                 Global.Identifiers.IncrementIdentifier("credentials");
 
                 Xml.SaveXmlDocument(_credentialDocument, _credFilePath);
-
-                return true;
             }
 
             throw new ApplicationException("Failed to add credential");
@@ -47,12 +45,10 @@ public class CredentialXmlService : ICredentialService
         catch (XmlException e)
         {
             Console.WriteLine(e.Message);
-            return false;
         }
         catch (ApplicationException e)
         {
             Console.Error.WriteLine("Could not convert credential to Xml element.\n\n" + e.Message);
-            return false;
         }
     }
 
@@ -66,7 +62,7 @@ public class CredentialXmlService : ICredentialService
             var passwordElement = _credentialDocument.CreateElement("password");
 
             // add id and nickname attributes to cred element
-            credElement.SetAttribute("id", credential.Id.ToString());
+            credElement.SetAttribute("id", credential.CredentialId.ToString());
             credElement.SetAttribute("nickname", credential.Nickname);
             
             // set value of elements
@@ -103,7 +99,7 @@ public class CredentialXmlService : ICredentialService
             {
                 // very safe to presume there is an "id" attribute
                 var credId = el.GetAttribute("id");
-                if (credId == credential.Id.ToString())
+                if (credId == credential.CredentialId.ToString())
                 {
                     root.RemoveChild(el);
                     break;
@@ -152,7 +148,11 @@ public class CredentialXmlService : ICredentialService
                     }
                 
                     // add new credential object to list
-                    Credential cred = new(username, password, nickname, id);
+                    Credential cred = new Credential();
+                    cred.Username = username;
+                    cred.Password = password;
+                    cred.Nickname = nickname;
+                    cred.CredentialId = id;
                     creds.Add(cred);
                 }
             }

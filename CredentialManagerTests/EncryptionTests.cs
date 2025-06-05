@@ -1,5 +1,4 @@
 using CredentialManager.Services;
-using CredentialManager.User;
 
 namespace CredentialManagerTests;
 

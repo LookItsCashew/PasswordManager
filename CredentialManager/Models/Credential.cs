@@ -1,15 +1,13 @@
-﻿namespace CredentialManager.Models;
+﻿using SQLite;
 
-public class Credential(string username, string password, string nickname, int id)
+namespace CredentialManager.Models;
+
+[Table("Credentials")]
+public class Credential
 {
-    public int Id { get; } = id;
-    public string Username { get; private set; } = username;
-    public string Password { get; private set; } = password;
-    public string Nickname { get; private set; } = nickname;
-
-    public void UpdateUsername(string newUsername) => Username = newUsername;
-    
-    public void UpdatePassword(string newPassword) => Password = newPassword;
-    
-    public void UpdateNickname(string newNickname) => Nickname = newNickname;
+    public int CredentialId { get; set; }
+    public int GroupId  { get; set; }
+    public string Username { get; set; }
+    public string Password { get; set; }
+    public string Nickname { get; set; }
 }

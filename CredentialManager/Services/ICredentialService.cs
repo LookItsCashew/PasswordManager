@@ -4,7 +4,7 @@ namespace CredentialManager.Services;
 
 public interface ICredentialService
 {
-    public bool AddCredential(Credential credential);
+    public void AddCredential(Credential credential);
 
     public void RemoveCredentialById(Credential credential);
 
