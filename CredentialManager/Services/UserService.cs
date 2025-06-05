@@ -1,34 +1,51 @@
-﻿using System.Xml;
-using CredentialManager.Utils;
+﻿using CredentialManager.Models;
+using CredentialManager.Database;
 
-namespace CredentialManager.User;
+namespace CredentialManager.Services;
 
 public class UserService
 {
-    private readonly string _userFilePath = Directory.GetCurrentDirectory() + 
-                                                Path.DirectorySeparatorChar + "user.xml";
-
-    private readonly XmlDocument _userDocument;
-
     public UserService()
     {
-        if (!File.Exists(_userFilePath))
-        {
-            // create the file
-            Xml.CreateXmlFile(_userFilePath, "user");
-            
-            
+        
+    }
+
+    public bool LogIn(User user)
+    {
+        var conn = ConnectionManager.GetDatabaseConnection();
+        try
+        { 
+            var results = conn.Query<User>($"SELECT * FROM User WHERE Username = '{user.Username}'");
+            if (results.Any())
+            {
+                return results.First().Password == user.Password && results.First().Username == user.Username;
+            }
         }
-        _userDocument = Xml.GetXmlDocument(_userFilePath)!;
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+        finally
+        {
+            conn.Close();
+        }
+        return false;
     }
 
-    public bool LogIn(string username, string password)
+    public void Register(User user)
     {
-        throw new NotImplementedException();
-    }
-
-    public bool Register(string username, string password)
-    {
-        throw new NotImplementedException();
+        var conn = ConnectionManager.GetDatabaseConnection();
+        try
+        {
+            conn.Insert(user);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+        finally
+        {
+            conn.Close();
+        }
     }
 }
