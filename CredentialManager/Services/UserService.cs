@@ -9,6 +9,50 @@ public class UserService
     {
         
     }
+    
+    public User Registration()
+    {
+        Console.Write("Username: ");
+        var username = Console.ReadLine();
+        
+        Console.Write("Password: ");
+        var password = Console.ReadLine();
+        
+        Console.Write("Email: ");
+        var email = Console.ReadLine();
+
+        if (username == null || password == null)
+        {
+            Console.WriteLine("Please enter a username and password to register.");
+            Registration();
+        }
+        
+        return new User { Username = username!.Trim(), Password = password!.Trim(), Email = email.Trim() };
+    }
+    
+    public User CheckLogin()
+    {
+        UserService us = new UserService();
+        Console.Write("Username: ");
+        var username = Console.ReadLine();
+            
+        Console.Write("Password: ");
+        var password = Console.ReadLine();
+        
+        var user = new User
+        {
+            Username = username != null ? username : "",
+            Password = password != null ? password : ""
+        };
+
+        if (!us.LogIn(user))
+        {
+            Console.WriteLine("Invalid username or password.");
+            CheckLogin();
+        }
+
+        return user;
+    }
 
     public bool LogIn(User user)
     {
