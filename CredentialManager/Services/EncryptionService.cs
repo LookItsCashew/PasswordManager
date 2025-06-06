@@ -87,13 +87,13 @@ public class EncryptionService
     /// </summary>
     /// <param name="plainText">Plain text to be hashed</param>
     /// <returns>256 hash of plain text in byte array</returns>
-    public byte[] HashText(string plainText)
+    public string HashText(string plainText)
     {
         // Convert the plaintext into hashed byte array
         using var sha256 = SHA256.Create();
         var hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(plainText));
 
-        return hash;
+        return Convert.ToBase64String(hash);
     }
     
     /// <summary>

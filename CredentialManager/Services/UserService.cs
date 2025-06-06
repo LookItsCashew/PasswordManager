@@ -1,15 +1,12 @@
-﻿using CredentialManager.Models;
+﻿using System.Text;
+using CredentialManager.Models;
 using CredentialManager.Database;
+using CredentialManager.Utils;
 
 namespace CredentialManager.Services;
 
 public class UserService
 {
-    public UserService()
-    {
-        
-    }
-    
     public User Registration()
     {
         Console.Write("Username: ");
@@ -26,8 +23,12 @@ public class UserService
             Console.WriteLine("Please enter a username and password to register.");
             Registration();
         }
+
+        var es = new EncryptionService();
+        var salted = es.SaltHash("htWt6583bLYT8", password);
+        var hash = es.HashText(salted);
         
-        return new User { Username = username!.Trim(), Password = password!.Trim(), Email = email.Trim() };
+        return new User { Username = username!.Trim(), Password = hash!.Trim(), Email = email.Trim() };
     }
     
     public User CheckLogin()
@@ -39,10 +40,14 @@ public class UserService
         Console.Write("Password: ");
         var password = Console.ReadLine();
         
+        var es = new EncryptionService();
+        var salted = es.SaltHash("htWt6583bLYT8", password);
+        var hash = es.HashText(salted);
+        
         var user = new User
         {
             Username = username != null ? username : "",
-            Password = password != null ? password : ""
+            Password = hash != null ? hash : ""
         };
 
         if (!us.LogIn(user))
@@ -54,7 +59,7 @@ public class UserService
         return user;
     }
 
-    public bool LogIn(User user)
+    private bool LogIn(User user)
     {
         var conn = ConnectionManager.GetDatabaseConnection();
         try
@@ -62,7 +67,8 @@ public class UserService
             var results = conn.Query<User>($"SELECT * FROM User WHERE Username = '{user.Username}'");
             if (results.Any())
             {
-                return results.First().Password == user.Password && results.First().Username == user.Username;
+                return results.First().Password == user.Password && 
+                       results.First().Username == user.Username;
             }
         }
         catch (Exception e)
@@ -81,6 +87,9 @@ public class UserService
         var conn = ConnectionManager.GetDatabaseConnection();
         try
         {
+            // hash & salt password before saving to database
+            var es = new EncryptionService(Global.Keys.GetKeyById("0"));
+            
             conn.Insert(user);
         }
         catch (Exception ex)

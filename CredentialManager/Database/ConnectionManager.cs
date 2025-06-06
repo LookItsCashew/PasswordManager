@@ -19,7 +19,7 @@ public static class ConnectionManager
         }
     }
 
-    public static void CreateDatabase()
+    private static void CreateDatabase()
     {
         var conn = new SQLiteConnection(DatabaseConn);
         try
