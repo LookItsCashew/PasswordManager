@@ -1,11 +1,12 @@
 ﻿using CredentialManager.Models;
+using CredentialManager.Utils;
 using SQLite;
 
 namespace CredentialManager.Database;
 
 public static class ConnectionManager
 {
-    private const string DatabaseConn = "Credentials.db";
+    private static readonly string DatabaseConn = Global.DefaultVaultFolderPath + "credentials.db";
 
     public static bool DatabaseExists { get; } = File.Exists(DatabaseConn);
     
