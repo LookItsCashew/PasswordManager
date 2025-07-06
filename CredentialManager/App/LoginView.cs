@@ -19,7 +19,7 @@ public class LoginView : View
         var salted = es.SaltHash("htWt6583bLYT8", password);
         var hash = es.HashText(salted);
 
-        var user = new User()
+        var user = new User
         {
             Username = username,
             Password = hash
