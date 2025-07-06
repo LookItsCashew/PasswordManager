@@ -10,10 +10,7 @@ static class Program
 {
     static void Main()
     {
-        var appView = new AppView
-        {
-            ViewTitle = "Credential Manager"
-        };
+        var appView = new AppView();
         
         UserService us = new UserService();
         User user;
@@ -27,10 +24,7 @@ static class Program
         }
         else
         {
-            var loginView = new LoginView
-            {
-                ViewTitle = "Please Login"
-            };
+            var loginView = new LoginView();
             appView.SetSubView(loginView);
             appView.Display();
             

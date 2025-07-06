@@ -2,18 +2,18 @@ using Spectre.Console;
 
 namespace CredentialManager.App;
 
-public class AppView : View
+public class AppView : IView
 {
-    private View _currSubView = null!;
+    private IView _currSubView = null!;
     
-    public View CurrSubView => _currSubView;
+    public IView CurrSubView => _currSubView;
 
-    public void SetSubView(View subView)
+    public void SetSubView(IView subView)
     {
         _currSubView = subView;
     }
 
-    public override void Display()
+    public void Display()
     {
         AnsiConsole.Write(
             new FigletText("Credential Manager")

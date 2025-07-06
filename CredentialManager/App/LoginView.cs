@@ -4,7 +4,7 @@ using Spectre.Console;
 
 namespace CredentialManager.App;
 
-public class LoginView : View
+public class LoginView : IView
 {
     public void GetUserLogin()
     {
@@ -34,9 +34,9 @@ public class LoginView : View
         }
     }
     
-    public override void Display()
+    public void Display()
     {
-        var title = new Rule($"[yellow]{ViewTitle}[/]");
+        var title = new Rule("[yellow]Please Login[/]");
         AnsiConsole.Write(title);
     }
 }
