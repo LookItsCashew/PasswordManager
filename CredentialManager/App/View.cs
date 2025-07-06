@@ -1,4 +1,4 @@
-namespace CredentialManager.Views;
+namespace CredentialManager.App;
 
 public abstract class View
 {
