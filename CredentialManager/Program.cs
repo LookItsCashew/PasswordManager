@@ -2,6 +2,8 @@
 using CredentialManager.Utils;
 using CredentialManager.Database;
 using CredentialManager.Models;
+using CredentialManager.Views;
+using Spectre.Console;
 
 namespace CredentialManager;
 
@@ -21,9 +23,20 @@ static class Program
         }
         else
         {
+            var loginView = new LoginView
+            {
+                ViewTitle = "Please Login"
+            };
+            loginView.Display();
             user = us.CheckLogin();
-            Console.Clear();
         }
-        Console.WriteLine($"Hello, {user.Username}!");
+
+        while (true)
+        {
+            if (Console.ReadKey(true).Key == ConsoleKey.Q)
+            {
+                break;
+            }
+        }
     }
 }
