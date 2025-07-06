@@ -2,8 +2,7 @@
 using CredentialManager.Utils;
 using CredentialManager.Database;
 using CredentialManager.Models;
-using CredentialManager.Views;
-using Spectre.Console;
+using CredentialManager.App;
 
 namespace CredentialManager;
 
@@ -11,6 +10,11 @@ static class Program
 {
     static void Main()
     {
+        var appView = new AppView
+        {
+            ViewTitle = "Credential Manager"
+        };
+        
         UserService us = new UserService();
         User user;
 
@@ -27,8 +31,12 @@ static class Program
             {
                 ViewTitle = "Please Login"
             };
-            loginView.Display();
-            user = us.CheckLogin();
+            appView.SetSubView(loginView);
+            appView.Display();
+            
+            // we know the current view is a LoginView at this point, but validating anyway for sanity
+            var currView = appView.CurrSubView as LoginView;  // if this fails for any reason, currView will be null
+            currView?.GetUserLogin();
         }
 
         while (true)

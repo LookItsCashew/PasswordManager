@@ -31,32 +31,9 @@ public class UserService
         return new User { Username = username!.Trim(), Password = hash!.Trim(), Email = email.Trim() };
     }
     
-    public User CheckLogin()
+    public bool CheckLogin(User user)
     {
-        UserService us = new UserService();
-        Console.Write("Username: ");
-        var username = Console.ReadLine();
-            
-        Console.Write("Password: ");
-        var password = Console.ReadLine();
-        
-        var es = new EncryptionService();
-        var salted = es.SaltHash("htWt6583bLYT8", password);
-        var hash = es.HashText(salted);
-        
-        var user = new User
-        {
-            Username = username != null ? username : "",
-            Password = hash != null ? hash : ""
-        };
-
-        if (!us.LogIn(user))
-        {
-            Console.WriteLine("Invalid username or password.");
-            CheckLogin();
-        }
-
-        return user;
+        return LogIn(user);
     }
 
     private bool LogIn(User user)
