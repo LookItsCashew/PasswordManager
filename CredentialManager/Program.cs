@@ -10,29 +10,19 @@ static class Program
 {
     static void Main()
     {
+        Console.OutputEncoding = System.Text.Encoding.UTF8;
         var appView = new AppView();
-        
-        UserService us = new UserService();
-        User user;
 
-        if (!ConnectionManager.DatabaseExists)
+        if (!UserService.IsUserRegistered())
         {
-            Console.WriteLine("Welcome to your new Credential Manager! Please register below.\n");
-            user = us.Registration();
-            Console.Clear();
-            us.Register(user);
+            appView.SetSubView(new RegisterView());
         }
         else
         {
-            var loginView = new LoginView();
-            appView.SetSubView(loginView);
-            appView.Display();
-            
-            // we know the current view is a LoginView at this point, but validating anyway for sanity
-            var currView = appView.CurrSubView as LoginView;  // if this fails for any reason, currView will be null
-            currView?.GetUserLogin();
+            appView.SetSubView(new LoginView());
         }
 
+        appView.Display();
         while (true)
         {
             if (Console.ReadKey(true).Key == ConsoleKey.Q)

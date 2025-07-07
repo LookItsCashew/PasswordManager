@@ -7,28 +7,24 @@ namespace CredentialManager.Services;
 
 public class UserService
 {
-    public User Registration()
+    public static bool IsUserRegistered()
     {
-        Console.Write("Username: ");
-        var username = Console.ReadLine();
-        
-        Console.Write("Password: ");
-        var password = Console.ReadLine();
-        
-        Console.Write("Email: ");
-        var email = Console.ReadLine();
-
-        if (username == null || password == null)
+        var conn = ConnectionManager.GetDatabaseConnection();
+        try
         {
-            Console.WriteLine("Please enter a username and password to register.");
-            Registration();
+            var results = conn.Query<User>("SELECT * FROM User");
+            return results.Count != 0;
+        }
+        catch (SQLite.SQLiteException e)
+        {
+            Console.Error.WriteLine(e.Message);
+        }
+        finally
+        {
+            conn.Close();
         }
 
-        var es = new EncryptionService();
-        var salted = es.SaltHash("htWt6583bLYT8", password);
-        var hash = es.HashText(salted);
-        
-        return new User { Username = username!.Trim(), Password = hash!.Trim(), Email = email.Trim() };
+        return false;
     }
     
     public bool CheckLogin(User user)
@@ -64,9 +60,6 @@ public class UserService
         var conn = ConnectionManager.GetDatabaseConnection();
         try
         {
-            // hash & salt password before saving to database
-            var es = new EncryptionService(Global.Keys.GetKeyById("0"));
-            
             conn.Insert(user);
         }
         catch (Exception ex)
