@@ -4,7 +4,7 @@ namespace CredentialManager.App;
 
 public class MainView : IView
 {
-    public void Display()
+    public void Render()
     {
         AnsiConsole.Write(new Rule("[yellow]Welcome![/]"));
     }

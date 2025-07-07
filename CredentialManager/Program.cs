@@ -1,7 +1,4 @@
 ﻿using CredentialManager.Services;
-using CredentialManager.Utils;
-using CredentialManager.Database;
-using CredentialManager.Models;
 using CredentialManager.App;
 
 namespace CredentialManager;
@@ -15,14 +12,14 @@ static class Program
 
         if (!UserService.IsUserRegistered())
         {
-            appView.SetSubView(new RegisterView());
+            appView.CurrentSubView =  new RegisterView();
         }
         else
         {
-            appView.SetSubView(new LoginView());
+            appView.CurrentSubView = new LoginView();
         }
 
-        appView.Display();
+        appView.RefreshAppViewEvent?.Invoke();
         while (true)
         {
             if (Console.ReadKey(true).Key == ConsoleKey.Q)

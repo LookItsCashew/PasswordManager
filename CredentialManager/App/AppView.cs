@@ -8,22 +8,27 @@ namespace CredentialManager.App;
 /// </summary>
 public class AppView : IView
 {
-    private IView _currSubView = null!;
-    
-    public IView CurrSubView => _currSubView;
+    public Action? RefreshAppViewEvent;
 
-    public void SetSubView(IView subView)
+    public IView CurrentSubView { get; set; } = null!;
+
+    public AppView()
     {
-        _currSubView = subView;
+        RefreshAppViewEvent += OnRefreshAppViewEvent;
     }
 
-    public void Display()
+    private void OnRefreshAppViewEvent()
     {
         AnsiConsole.Clear();
+        Render();
+    }
+
+    public void Render()
+    {
         AnsiConsole.Write(
             new FigletText("Credential Manager")
                 .Centered()
                 .Color(Color.Blue));
-        _currSubView.Display();
+        CurrentSubView.Render();
     }
 }

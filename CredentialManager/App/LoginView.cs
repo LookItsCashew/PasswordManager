@@ -40,7 +40,7 @@ public class LoginView : IView
         }
     }
 
-    public void Display()
+    public void Render()
     {
         AnsiConsole.Write(new Rule("[yellow]Please Login[/]"));
         GetUserLogin();

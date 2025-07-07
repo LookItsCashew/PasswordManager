@@ -43,7 +43,7 @@ public class RegisterView : IView
         }
     }
     
-    public void Display()
+    public void Render()
     {
         AnsiConsole.Write(new Rule("[yellow]Register Your Account[/]"));
         GetUserRegistration();
