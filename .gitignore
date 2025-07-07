@@ -6,3 +6,8 @@ csproj.*
 
 *bin*
 *obj*
+
+*Copilot*
+*DesignTimeBuild*
+*v17*
+*FileContentIndex*

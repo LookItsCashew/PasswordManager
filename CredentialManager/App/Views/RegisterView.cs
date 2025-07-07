@@ -1,8 +1,8 @@
-﻿using CredentialManager.Services;
-using CredentialManager.Models;
+﻿using CredentialManager.Models;
+using CredentialManager.Services;
 using Spectre.Console;
 
-namespace CredentialManager.App;
+namespace CredentialManager.App.Views;
 
 public class RegisterView : IView
 {

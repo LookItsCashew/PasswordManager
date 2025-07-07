@@ -1,6 +1,6 @@
 ﻿using Spectre.Console;
 
-namespace CredentialManager.App;
+namespace CredentialManager.App.Views;
 
 public class ManageGroupsView : IView
 {

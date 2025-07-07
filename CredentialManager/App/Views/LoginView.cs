@@ -1,9 +1,8 @@
-using System.Text;
 using CredentialManager.Models;
 using CredentialManager.Services;
 using Spectre.Console;
 
-namespace CredentialManager.App;
+namespace CredentialManager.App.Views;
 
 public class LoginView : IView
 {

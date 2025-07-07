@@ -1,4 +1,4 @@
-namespace CredentialManager.App;
+namespace CredentialManager.App.Views;
 
 public interface IView
 {

@@ -1,6 +1,6 @@
 using Spectre.Console;
 
-namespace CredentialManager.App;
+namespace CredentialManager.App.Views;
 
 /// <summary>
 /// This view class acts as a container to maintain app's user interface state, and will only overwrite the subview's
@@ -26,7 +26,7 @@ public class AppView : IView
         TransitionSubViewEvent -= OnTransitionSubViewEvent;
     }
 
-    private void OnRefreshAppViewEvent()
+    private void RefreshAppView()
     {
         AnsiConsole.Clear();
         Render();
@@ -35,7 +35,7 @@ public class AppView : IView
     private void OnTransitionSubViewEvent(IView subview)
     {
         CurrentSubView = subview;
-        RefreshAppViewEvent?.Invoke();
+        RefreshAppView();
     }
 
     public void Render()
