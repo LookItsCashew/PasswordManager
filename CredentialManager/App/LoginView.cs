@@ -44,5 +44,6 @@ public class LoginView : IView
     {
         AnsiConsole.Write(new Rule("[yellow]Please Login[/]"));
         GetUserLogin();
+        AppView.TransitionSubViewEvent?.Invoke(new MainView());
     }
 }

@@ -47,5 +47,6 @@ public class RegisterView : IView
     {
         AnsiConsole.Write(new Rule("[yellow]Register Your Account[/]"));
         GetUserRegistration();
+        AppView.TransitionSubViewEvent?.Invoke(new MainView());
     }
 }
