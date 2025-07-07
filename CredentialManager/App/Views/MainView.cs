@@ -27,6 +27,6 @@ public class MainView : IView
                     MainMenuChoices.Groups));
         
         var nextView = SelectChoice(selectedOption);
-        AppView.TransitionSubViewEvent?.Invoke(nextView);
+        AppEvents.TransitionSubViewEvent?.Invoke(nextView);
     }
 }

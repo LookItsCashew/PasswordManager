@@ -8,22 +8,16 @@ namespace CredentialManager.App.Views;
 /// </summary>
 public class AppView : IView
 {
-    public Action? RefreshAppViewEvent;
-    
-    public static Action<IView>? TransitionSubViewEvent;
-
-    public IView CurrentSubView { get; set; } = null!;
+    public IView CurrentSubView { get; private set; } = null!;
 
     public AppView()
     {
-        RefreshAppViewEvent += OnRefreshAppViewEvent;
-        TransitionSubViewEvent += OnTransitionSubViewEvent;
+        AppEvents.TransitionSubViewEvent += OnTransitionSubViewEvent;
     }
 
     ~AppView()
     {
-        RefreshAppViewEvent -= OnRefreshAppViewEvent;
-        TransitionSubViewEvent -= OnTransitionSubViewEvent;
+        AppEvents.TransitionSubViewEvent -= OnTransitionSubViewEvent;
     }
 
     private void RefreshAppView()
