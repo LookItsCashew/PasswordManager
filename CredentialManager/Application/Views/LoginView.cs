@@ -2,7 +2,7 @@ using CredentialManager.Models;
 using CredentialManager.Services;
 using Spectre.Console;
 
-namespace CredentialManager.App.Views;
+namespace CredentialManager.Application.Views;
 
 public class LoginView : IView
 {
@@ -43,6 +43,6 @@ public class LoginView : IView
     {
         AnsiConsole.Write(new Rule("[yellow]Please Login[/]"));
         GetUserLogin();
-        AppEvents.TransitionSubViewEvent?.Invoke(new MainView());
+        ApplicationEvents.TransitionSubViewEvent?.Invoke(new MainView());
     }
 }

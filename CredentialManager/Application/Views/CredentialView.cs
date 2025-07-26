@@ -1,6 +1,6 @@
 ﻿using Spectre.Console;
 
-namespace CredentialManager.App.Views;
+namespace CredentialManager.Application.Views;
 
 public class CredentialView : IView
 {

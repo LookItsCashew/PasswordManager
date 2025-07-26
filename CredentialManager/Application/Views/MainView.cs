@@ -1,6 +1,6 @@
 ﻿using Spectre.Console;
 
-namespace CredentialManager.App.Views;
+namespace CredentialManager.Application.Views;
 
 public class MainView : IView
 {
@@ -62,6 +62,6 @@ public class MainView : IView
         //             MainMenuChoices.Groups));
         //
         var nextView = SelectChoice(choiceSelected);
-        AppEvents.TransitionSubViewEvent?.Invoke(nextView);
+        ApplicationEvents.TransitionSubViewEvent?.Invoke(nextView);
     }
 }

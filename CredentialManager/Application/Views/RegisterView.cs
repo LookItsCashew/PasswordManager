@@ -2,7 +2,7 @@
 using CredentialManager.Services;
 using Spectre.Console;
 
-namespace CredentialManager.App.Views;
+namespace CredentialManager.Application.Views;
 
 public class RegisterView : IView
 {
@@ -47,6 +47,6 @@ public class RegisterView : IView
     {
         AnsiConsole.Write(new Rule("[yellow]Register Your Account[/]"));
         GetUserRegistration();
-        AppEvents.TransitionSubViewEvent?.Invoke(new MainView());
+        ApplicationEvents.TransitionSubViewEvent?.Invoke(new MainView());
     }
 }
