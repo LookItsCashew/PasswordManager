@@ -12,3 +12,5 @@ csproj.*
 *DesignTimeBuild*
 *v17*
 *FileContentIndex*
+
+.fake

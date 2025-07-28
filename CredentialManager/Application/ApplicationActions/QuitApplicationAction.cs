@@ -1,7 +1,7 @@
 
-namespace CredentialManager.Application.ViewActions;
+namespace CredentialManager.Application.ApplicationActions;
 
-internal class QuitApplicationAction : ViewAction
+internal class QuitApplicationAction : ApplicationAction
 {
     public override ConsoleKey TriggerKey { get; protected set; }
 

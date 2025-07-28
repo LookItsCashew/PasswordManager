@@ -6,62 +6,53 @@ public class MainView : IView
 {
     private enum MainMenuChoices
     {
-        Credentials = 'c',
-        Groups = 'g'
+        Credentials,
+        Groups,
+        Quit
     }
     
     private IView SelectChoice(MainMenuChoices choice) => choice switch
     {
+        // Using switch to easily accommodate 
         MainMenuChoices.Credentials => new CredentialView(),
         MainMenuChoices.Groups => new ManageGroupsView(),
         _ => throw new ArgumentOutOfRangeException(nameof(choice), choice, null)
     };
 
-    private MainMenuChoices ChoiceListener()
+        public void PollForActions()
     {
-        while (true)
-        {
-            switch (Console.ReadKey(true).KeyChar)
-            {
-                case (char)MainMenuChoices.Credentials:
-                    return MainMenuChoices.Credentials;
-                case (char)MainMenuChoices.Groups:
-                    return MainMenuChoices.Groups;
-            }
-        }
+        throw new NotImplementedException();
     }
-    
+
     public void Render()
     {
-        AnsiConsole.Write(new Rule("[yellow]Main Menu[/]"));
+        AnsiConsole.Write(new Rule("[yellow italic]Main Menu[/]"));
 
-        string menuContents = "";
-        var choiceEnum = Enum.GetValues<MainMenuChoices>();
-        foreach (MainMenuChoices choice in choiceEnum)
+        var selectedOption = AnsiConsole.Prompt(
+            new SelectionPrompt<MainMenuChoices>()
+                .AddChoices(
+                    MainMenuChoices.Credentials,
+                    MainMenuChoices.Groups,
+                    MainMenuChoices.Quit));
+
+        if (selectedOption == MainMenuChoices.Quit)
         {
-            menuContents = string.Concat(menuContents, 
-                "(" + Char.ToUpper((char)choice) + ")   ", 
-                choice);
-            menuContents += choiceEnum.Last() != choice ? "\n" : "";
+            ApplicationEvents.QuitApplicationEvent?.Invoke();
         }
-        
-        var mainMenuPanel = new Panel(menuContents)
+        else
         {
-            Expand = true,
-            Border = BoxBorder.Double
-        };
-        
-        AnsiConsole.Write(mainMenuPanel);
-
-        var choiceSelected = ChoiceListener();
-
-        // var selectedOption = AnsiConsole.Prompt(
-        //     new SelectionPrompt<MainMenuChoices>()
-        //         .AddChoices(
-        //             MainMenuChoices.Credentials,
-        //             MainMenuChoices.Groups));
-        //
-        var nextView = SelectChoice(choiceSelected);
-        ApplicationEvents.TransitionSubViewEvent?.Invoke(nextView);
+            IView nextView;
+            try
+            {
+                nextView = SelectChoice(selectedOption);
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                AnsiConsole.MarkupLine("⚠️ [red] Somehow an invalid choice was made[/] ⚠️");
+                Thread.Sleep(1000);
+                nextView = new MainView();
+            }
+            ApplicationEvents.TransitionSubViewEvent?.Invoke(nextView);
+        }
     }
 }

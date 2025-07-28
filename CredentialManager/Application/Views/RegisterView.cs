@@ -42,10 +42,15 @@ public class RegisterView : IView
             break;
         }
     }
+
+    public void PollForActions()
+    {
+        throw new NotImplementedException();
+    }
     
     public void Render()
     {
-        AnsiConsole.Write(new Rule("[yellow]Register Your Account[/]"));
+        AnsiConsole.Write(new Rule("[red italic]Register Your Account[/]"));
         GetUserRegistration();
         ApplicationEvents.TransitionSubViewEvent?.Invoke(new MainView());
     }

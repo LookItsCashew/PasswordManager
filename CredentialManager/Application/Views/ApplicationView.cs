@@ -39,6 +39,11 @@ public class ApplicationView : IView
         RefreshAppView();
     }
 
+    public void PollForActions()
+    {
+        CurrentSubView.PollForActions();
+    }
+
     public void Render()
     {
         AnsiConsole.Write(

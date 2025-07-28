@@ -39,9 +39,14 @@ public class LoginView : IView
         }
     }
 
+    public void PollForActions()
+    {
+        throw new NotImplementedException();
+    }
+
     public void Render()
     {
-        AnsiConsole.Write(new Rule("[yellow]Please Login[/]"));
+        AnsiConsole.Write(new Rule("[blue italic]Please Login[/]"));
         GetUserLogin();
         ApplicationEvents.TransitionSubViewEvent?.Invoke(new MainView());
     }
