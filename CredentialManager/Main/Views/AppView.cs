@@ -25,7 +25,8 @@ public class AppView : IView
         AppEvents.TransitionSubViewEvent -= OnTransitionSubViewEvent;
     }
     
-    private IView SetInitialView() => UserService.IsUserRegistered() ? new LoginView() : new RegisterView();
+    private IView SetInitialView() => 
+        UserService.IsUserRegistered() ? new LoginView() : new RegisterView();
 
     private void RefreshAppView()
     {

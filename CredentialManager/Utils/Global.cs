@@ -4,7 +4,7 @@ namespace CredentialManager.Utils;
 
 public static class Global
 {
-    public static DirectoryInfo AppDataDirectory = new DirectoryInfo(
+    public static DirectoryInfo AppDataDirectory => new DirectoryInfo(
         Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             "CredentialManager"
