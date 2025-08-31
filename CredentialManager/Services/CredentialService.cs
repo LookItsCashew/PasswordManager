@@ -3,7 +3,7 @@ using CredentialManager.Database;
 
 namespace CredentialManager.Services;
 
-public class CredentialSqliteService : ICredentialService
+public class CredentialService
 {
     public void AddCredential(Credential credential)
     {

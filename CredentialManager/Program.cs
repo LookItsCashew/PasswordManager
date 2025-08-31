@@ -1,6 +1,6 @@
-﻿using CredentialManager.Services;
-using CredentialManager.Application;
-using CredentialManager.Application.Views;
+﻿using CredentialManager.Main;
+using CredentialManager.Services;
+using Spectre.Console;
 
 namespace CredentialManager;
 
@@ -11,7 +11,7 @@ static class Program
         // explicitly set the console's encoding to UTF-8 for emoji support
         Console.OutputEncoding = System.Text.Encoding.UTF8;
 
-        var app = new App();
+        var app = App.CreateApp();
         app.Run();
     }
 }

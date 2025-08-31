@@ -1,6 +1,6 @@
 ﻿using Spectre.Console;
 
-namespace CredentialManager.Application.Views;
+namespace CredentialManager.Main.Views;
 
 public class MainView : IView
 {
@@ -19,11 +19,6 @@ public class MainView : IView
         _ => throw new ArgumentOutOfRangeException(nameof(choice), choice, null)
     };
 
-        public void PollForActions()
-    {
-        throw new NotImplementedException();
-    }
-
     public void Render()
     {
         AnsiConsole.Write(new Rule("[yellow italic]Main Menu[/]"));
@@ -37,7 +32,7 @@ public class MainView : IView
 
         if (selectedOption == MainMenuChoices.Quit)
         {
-            ApplicationEvents.QuitApplicationEvent?.Invoke();
+            AppEvents.QuitAppEvent?.Invoke();
         }
         else
         {
@@ -52,7 +47,7 @@ public class MainView : IView
                 Thread.Sleep(1000);
                 nextView = new MainView();
             }
-            ApplicationEvents.TransitionSubViewEvent?.Invoke(nextView);
+            AppEvents.TransitionSubViewEvent?.Invoke(nextView);
         }
     }
 }

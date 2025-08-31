@@ -4,18 +4,28 @@ namespace CredentialManager.Utils;
 
 public static class Global
 {
-    public static string DefaultVaultFolderPath => 
-        Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + "vault" + Path.DirectorySeparatorChar;
-    
+    public static DirectoryInfo AppDataDirectory = new DirectoryInfo(
+        Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "CredentialManager"
+            )
+        );
+
+    public static DirectoryInfo VaultDirectory => new DirectoryInfo(
+        Path.Combine(
+            AppDataDirectory.FullName,
+            "vault")
+        );
+
     public static readonly Identifiers Identifiers;
 
     public static readonly Keys Keys;
     
     static Global()
     {
-        if (!Directory.Exists(DefaultVaultFolderPath))
+        if (!VaultDirectory.Exists)
         {
-            Directory.CreateDirectory(DefaultVaultFolderPath);
+            VaultDirectory.Create();
         }
         
         Identifiers = Identifiers.Instance;

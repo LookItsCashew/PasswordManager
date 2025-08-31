@@ -2,7 +2,7 @@ using CredentialManager.Models;
 using CredentialManager.Services;
 using Spectre.Console;
 
-namespace CredentialManager.Application.Views;
+namespace CredentialManager.Main.Views;
 
 public class LoginView : IView
 {
@@ -39,15 +39,10 @@ public class LoginView : IView
         }
     }
 
-    public void PollForActions()
-    {
-        throw new NotImplementedException();
-    }
-
     public void Render()
     {
         AnsiConsole.Write(new Rule("[blue italic]Please Login[/]"));
         GetUserLogin();
-        ApplicationEvents.TransitionSubViewEvent?.Invoke(new MainView());
+        AppEvents.TransitionSubViewEvent?.Invoke(new MainView());
     }
 }

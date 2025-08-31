@@ -1,23 +1,23 @@
-using CredentialManager.Application.Views;
+using CredentialManager.Main.Views;
 using Spectre.Console;
 
-namespace CredentialManager.Application;
+namespace CredentialManager.Main;
 
 public class App
 {
-    private ApplicationView _appView = new ApplicationView();
+    AppView _appView = new AppView();
 
-    private bool _run = true;
+    bool _run = true;
 
-    public App()
+    private App()
     {
-        ApplicationEvents.QuitApplicationEvent += OnQuitEvent;
+        AppEvents.QuitAppEvent += OnQuitEvent;
         AnsiConsole.Clear();
     }
 
     ~App()
     {
-        ApplicationEvents.QuitApplicationEvent -= OnQuitEvent;
+        AppEvents.QuitAppEvent -= OnQuitEvent;
     }
 
     private void OnQuitEvent()
@@ -27,17 +27,18 @@ public class App
         Thread.Sleep(750);
     }
 
+    public static App CreateApp() => new App();
+
     public void Run()
     {
         _appView.Render();
         while (_run)
         {
-            _appView.PollForActions();
-            if (Console.ReadKey(true).Key == ConsoleKey.Escape)
+            if (Console.ReadKey(true).Key == ConsoleKey.Q)
             {
                 // Testing this only, will be moved to ViewAction sub-class 
                 // for triggering a quit event
-                ApplicationEvents.QuitApplicationEvent?.Invoke();
+                AppEvents.QuitAppEvent?.Invoke();
             }
         }
     }

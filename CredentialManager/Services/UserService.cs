@@ -2,11 +2,14 @@
 using CredentialManager.Models;
 using CredentialManager.Database;
 using CredentialManager.Utils;
+using CredentialManager.Database.Repositories;
 
 namespace CredentialManager.Services;
 
 public class UserService
 {
+    UserRepository _repo = new UserRepository();
+
     public static bool IsUserRegistered()
     {
         var conn = ConnectionManager.GetDatabaseConnection();
@@ -27,48 +30,23 @@ public class UserService
         return false;
     }
     
-    public bool CheckLogin(User user)
-    {
-        return LogIn(user);
-    }
+    public bool CheckLogin(User user) => LogIn(user);
 
-    private bool LogIn(User user)
+    bool LogIn(User user)
     {
-        var conn = ConnectionManager.GetDatabaseConnection();
-        try
-        { 
-            var results = conn.Query<User>($"SELECT * FROM User WHERE Username = '{user.Username}'");
-            if (results.Any())
-            {
-                return results.First().Password == user.Password && 
-                       results.First().Username == user.Username;
-            }
-        }
-        catch (Exception e)
+        var results = _repo.ReadAll();
+        if (results != null && results.Count > 0)
         {
-            Console.WriteLine(e);
+            return results.First().Username == user.Username && 
+                results.First().Password == user.Password;
         }
-        finally
-        {
-            conn.Close();
-        }
+
         return false;
     }
 
     public void Register(User user)
     {
-        var conn = ConnectionManager.GetDatabaseConnection();
-        try
-        {
-            conn.Insert(user);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-        }
-        finally
-        {
-            conn.Close();
-        }
+        // TODO: validate email address
+        _repo.Create(user);
     }
 }

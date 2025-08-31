@@ -1,28 +1,28 @@
 using CredentialManager.Services;
 using Spectre.Console;
 
-namespace CredentialManager.Application.Views;
+namespace CredentialManager.Main.Views;
 
 /// <summary>
 /// This view class acts as a container to maintain app's user interface state, and will only overwrite the subview's
 /// display when the view changes to another.
 /// </summary>
-public class ApplicationView : IView
+public class AppView : IView
 {
     public IView CurrentSubView { get; private set; } = null!;
 
-    public ApplicationView()
+    public AppView()
     {
-        ApplicationEvents.TransitionSubViewEvent += OnTransitionSubViewEvent;
+        AppEvents.TransitionSubViewEvent += OnTransitionSubViewEvent;
         CurrentSubView = SetInitialView();
     }
 
     /// <summary>
     /// Destructor, called when the object gets reclaimed by GC
     /// </summary>
-    ~ApplicationView()
+    ~AppView()
     {
-        ApplicationEvents.TransitionSubViewEvent -= OnTransitionSubViewEvent;
+        AppEvents.TransitionSubViewEvent -= OnTransitionSubViewEvent;
     }
     
     private IView SetInitialView() => UserService.IsUserRegistered() ? new LoginView() : new RegisterView();
@@ -38,12 +38,7 @@ public class ApplicationView : IView
         CurrentSubView = subview;
         RefreshAppView();
     }
-
-    public void PollForActions()
-    {
-        CurrentSubView.PollForActions();
-    }
-
+    
     public void Render()
     {
         AnsiConsole.Write(

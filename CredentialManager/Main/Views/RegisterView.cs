@@ -2,7 +2,7 @@
 using CredentialManager.Services;
 using Spectre.Console;
 
-namespace CredentialManager.Application.Views;
+namespace CredentialManager.Main.Views;
 
 public class RegisterView : IView
 {
@@ -10,13 +10,18 @@ public class RegisterView : IView
     {
         while (true)
         {
-            string username = AnsiConsole.Prompt(
-                new TextPrompt<string>("Username:"));
+            var username = AnsiConsole.Prompt(
+                new TextPrompt<string>("Username:")
+                );
+
             var password = AnsiConsole.Prompt(
                 new TextPrompt<string>("Password:")
-                    .Secret());
+                    .Secret()
+                    );
+
             var email = AnsiConsole.Prompt(
-                new TextPrompt<string>("Email:"));
+                new TextPrompt<string>("Email:")
+                );
 
             if (username == "" || password == "")
             {
@@ -42,16 +47,11 @@ public class RegisterView : IView
             break;
         }
     }
-
-    public void PollForActions()
-    {
-        throw new NotImplementedException();
-    }
     
     public void Render()
     {
         AnsiConsole.Write(new Rule("[red italic]Register Your Account[/]"));
         GetUserRegistration();
-        ApplicationEvents.TransitionSubViewEvent?.Invoke(new MainView());
+        AppEvents.TransitionSubViewEvent?.Invoke(new MainView());
     }
 }
