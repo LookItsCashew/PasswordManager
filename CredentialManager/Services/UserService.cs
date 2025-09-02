@@ -8,26 +8,12 @@ namespace CredentialManager.Services;
 
 public class UserService
 {
-    UserRepository _repo = new UserRepository();
+    private readonly UserRepository _repo = new();
 
-    public static bool IsUserRegistered()
+    public bool IsUserRegistered()
     {
-        var conn = ConnectionManager.GetDatabaseConnection();
-        try
-        {
-            var results = conn.Query<User>("SELECT * FROM User");
-            return results.Count != 0;
-        }
-        catch (SQLite.SQLiteException e)
-        {
-            Console.Error.WriteLine(e.Message);
-        }
-        finally
-        {
-            conn.Close();
-        }
-
-        return false;
+        // if second 'if' expression is evaluated, then ReadAll should NOT have returned null
+        return _repo.ReadAll() is not null && _repo.ReadAll().Count > 0;
     }
     
     public bool CheckLogin(User user) => LogIn(user);

@@ -26,7 +26,7 @@ public class AppView : IView
     }
     
     private IView SetInitialView() => 
-        UserService.IsUserRegistered() ? new LoginView() : new RegisterView();
+        new UserService().IsUserRegistered() ? new LoginView() : new RegisterView();
 
     private void RefreshAppView()
     {
