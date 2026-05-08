@@ -2,103 +2,55 @@
 using CredentialManager.Models;
 using CredentialManager.Database;
 using CredentialManager.Utils;
+using CredentialManager.Database.Repositories;
+using System.ComponentModel.DataAnnotations;
+using Spectre.Console;
 
 namespace CredentialManager.Services;
 
 public class UserService
 {
-    public User Registration()
+    private readonly UserRepository _repo = new();
+
+    public bool IsUserRegistered()
     {
-        Console.Write("Username: ");
-        var username = Console.ReadLine();
-        
-        Console.Write("Password: ");
-        var password = Console.ReadLine();
-        
-        Console.Write("Email: ");
-        var email = Console.ReadLine();
-
-        if (username == null || password == null)
-        {
-            Console.WriteLine("Please enter a username and password to register.");
-            Registration();
-        }
-
-        var es = new EncryptionService();
-        var salted = es.SaltHash("htWt6583bLYT8", password);
-        var hash = es.HashText(salted);
-        
-        return new User { Username = username!.Trim(), Password = hash!.Trim(), Email = email.Trim() };
+        // if second 'if' expression is evaluated, then ReadAll should NOT have returned null
+        return _repo.ReadAll() is not null && _repo.ReadAll().Count > 0;
     }
     
-    public User CheckLogin()
-    {
-        UserService us = new UserService();
-        Console.Write("Username: ");
-        var username = Console.ReadLine();
-            
-        Console.Write("Password: ");
-        var password = Console.ReadLine();
-        
-        var es = new EncryptionService();
-        var salted = es.SaltHash("htWt6583bLYT8", password);
-        var hash = es.HashText(salted);
-        
-        var user = new User
-        {
-            Username = username != null ? username : "",
-            Password = hash != null ? hash : ""
-        };
-
-        if (!us.LogIn(user))
-        {
-            Console.WriteLine("Invalid username or password.");
-            CheckLogin();
-        }
-
-        return user;
-    }
-
-    private bool LogIn(User user)
-    {
-        var conn = ConnectionManager.GetDatabaseConnection();
-        try
-        { 
-            var results = conn.Query<User>($"SELECT * FROM User WHERE Username = '{user.Username}'");
-            if (results.Any())
-            {
-                return results.First().Password == user.Password && 
-                       results.First().Username == user.Username;
-            }
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-        }
-        finally
-        {
-            conn.Close();
-        }
-        return false;
-    }
+    public bool CheckLogin(User user) => LogIn(user);
 
     public void Register(User user)
     {
-        var conn = ConnectionManager.GetDatabaseConnection();
-        try
+        // validate email address
+        while (!ValidateEmail(user.Email))
         {
-            // hash & salt password before saving to database
-            var es = new EncryptionService(Global.Keys.GetKeyById("0"));
-            
-            conn.Insert(user);
-        }
-        catch (Exception ex)
+            // continue the loop to prompt user until an email of valid format is given
+            // right now, this ONLY checks if the email is of a valid format, not if the email is an existing address
+            AnsiConsole.MarkupLine($"[bold red]Warning: '{user.Email}' does not appear to be a valid address.[/]\n");
+            user.Email = AnsiConsole.Prompt(
+                new TextPrompt<string>("Please re-enter your email:")
+                );
+        }  
+
+        _repo.Create(user);
+    }
+
+    public bool ValidateEmail(string email)
+    {
+        EmailAddressAttribute emailValidator = new();
+        return email != "" && emailValidator.IsValid(email);
+    }
+
+    bool LogIn(User user)
+    {
+        var results = _repo.ReadAll();
+        if (results != null && results.Count > 0)
         {
-            Console.WriteLine(ex.Message);
+            return results.First().Username == user.Username &&
+                results.First().Password == user.Password;
         }
-        finally
-        {
-            conn.Close();
-        }
+
+        return false;
     }
 }

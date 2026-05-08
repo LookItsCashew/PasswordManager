@@ -1,11 +1,17 @@
 ﻿using System.Xml;
 using CredentialManager.Services;
+using CredentialManager.Models;
 
 namespace CredentialManager.Utils;
 
 public class Keys
 {
-    private readonly string _keyFilePath = Global.DefaultVaultFolderPath + "keys.xml";
+    private readonly FileInfo _keyFile = new FileInfo(
+        Path.Combine(
+            Global.VaultDirectory.FullName,
+            "keys.xml"
+            )
+        );
 
     private static Keys? _instance;
     
@@ -25,12 +31,12 @@ public class Keys
 
     private Keys()
     {
-        if (!File.Exists(_keyFilePath))
+        if (!_keyFile.Exists)
         {
-            Xml.CreateXmlFile(_keyFilePath, "keys");
+            Xml.CreateXmlFile(_keyFile.FullName, "keys");
             var keyText = GenerateKeyBase();
             
-            _keyDocument = Xml.GetXmlDocument(_keyFilePath)!;
+            _keyDocument = Xml.GetXmlDocument(_keyFile.FullName)!;
             
             // create root element for keys
             var keyElement = _keyDocument.CreateElement("key");
@@ -46,12 +52,15 @@ public class Keys
             
             keyElement.InnerText = encryption.EncryptText(keyText.ToString());
             
-            Xml.SaveXmlDocument(_keyDocument, _keyFilePath);
+            Xml.SaveXmlDocument(_keyDocument, _keyFile.FullName);
             
             // increment the key identifier
             Global.Identifiers.IncrementIdentifier("keys");
+            var key = new Key(0, keyText.ToString());
         }
-        _keyDocument = Xml.GetXmlDocument(_keyFilePath)!;
+        _keyDocument = Xml.GetXmlDocument(_keyFile.FullName)!;
+
+        
     }
 
     private Guid GenerateKeyBase() => Guid.NewGuid();

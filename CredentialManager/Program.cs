@@ -1,7 +1,6 @@
-﻿using CredentialManager.Services;
-using CredentialManager.Utils;
-using CredentialManager.Database;
-using CredentialManager.Models;
+﻿using CredentialManager.Main;
+using CredentialManager.Services;
+using Spectre.Console;
 
 namespace CredentialManager;
 
@@ -9,21 +8,10 @@ static class Program
 {
     static void Main()
     {
-        UserService us = new UserService();
-        User user;
+        // explicitly set the console's encoding to UTF-8 for emoji support
+        Console.OutputEncoding = System.Text.Encoding.UTF8;
 
-        if (!ConnectionManager.DatabaseExists)
-        {
-            Console.WriteLine("Welcome to your new Credential Manager! Please register below.\n");
-            user = us.Registration();
-            Console.Clear();
-            us.Register(user);
-        }
-        else
-        {
-            user = us.CheckLogin();
-            Console.Clear();
-        }
-        Console.WriteLine($"Hello, {user.Username}!");
+        var app = App.CreateApp();
+        app.Run();
     }
 }

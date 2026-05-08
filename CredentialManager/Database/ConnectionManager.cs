@@ -1,19 +1,27 @@
 ﻿using CredentialManager.Models;
+using CredentialManager.Utils;
+using Spectre.Console;
 using SQLite;
 
 namespace CredentialManager.Database;
 
 public static class ConnectionManager
 {
-    private const string DatabaseConn = "Credentials.db";
+    private static readonly FileInfo _database = new FileInfo(
+        Path.Combine(
+            Global.VaultDirectory.FullName,
+            "credentials.db"
+            )
+        );
 
-    public static bool DatabaseExists { get; } = File.Exists(DatabaseConn);
+    public static bool DatabaseExists { get; } = _database.Exists;
     
-    public static SQLiteConnection GetDatabaseConnection() => new SQLiteConnection(DatabaseConn);
+    public static SQLiteConnection GetDatabaseConnection() => 
+        new SQLiteConnection(_database.FullName);
 
     static ConnectionManager()
     {
-        if (!DatabaseExists)
+        if (!_database.Exists)
         {
             CreateDatabase();
         }
@@ -21,7 +29,7 @@ public static class ConnectionManager
 
     private static void CreateDatabase()
     {
-        var conn = new SQLiteConnection(DatabaseConn);
+        var conn = new SQLiteConnection(_database.FullName);
         try
         {
             conn.CreateTable<Credential>();
@@ -31,7 +39,7 @@ public static class ConnectionManager
         }
         catch (SQLiteException e)
         {
-            Console.Error.WriteLine(e);
+            AnsiConsole.WriteException(e);
         }
         finally
         {

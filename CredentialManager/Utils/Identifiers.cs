@@ -4,8 +4,12 @@ namespace CredentialManager.Utils;
 
 public class Identifiers
 {
-    private readonly string _identifierFilePath = 
-        Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + "identifiers.xml";
+    private readonly FileInfo _identifierFile = new FileInfo(
+        Path.Combine(
+            Global.AppDataDirectory.FullName,
+            "identifiers.xml"
+            )
+        );
 
     private static Identifiers? _instance;
     
@@ -25,11 +29,11 @@ public class Identifiers
 
     private Identifiers()
     {
-        if (!File.Exists(_identifierFilePath))
+        if (!_identifierFile.Exists)
         {
-            Xml.CreateXmlFile(_identifierFilePath, "identifiers");
+            Xml.CreateXmlFile(_identifierFile.FullName, "identifiers");
             
-            _identifierDocument = Xml.GetXmlDocument(_identifierFilePath)!;
+            _identifierDocument = Xml.GetXmlDocument(_identifierFile.FullName)!;
             
             // create xml elements for each identifier in the document
             var keys = _identifierDocument.CreateElement("keys");
@@ -41,9 +45,9 @@ public class Identifiers
             keys.InnerText = "0";
             creds.InnerText = "0";
             
-            Xml.SaveXmlDocument(_identifierDocument, _identifierFilePath);
+            Xml.SaveXmlDocument(_identifierDocument, _identifierFile.FullName);
         }
-        _identifierDocument = Xml.GetXmlDocument(_identifierFilePath)!;
+        _identifierDocument = Xml.GetXmlDocument(_identifierFile.FullName)!;
     }
 
     /// <summary>
@@ -67,7 +71,7 @@ public class Identifiers
         }
         finally
         {
-            Xml.SaveXmlDocument(_identifierDocument, _identifierFilePath);
+            Xml.SaveXmlDocument(_identifierDocument, _identifierFile.FullName);
         }
         return result;
     }
@@ -92,7 +96,7 @@ public class Identifiers
         }
         finally
         {
-            Xml.SaveXmlDocument(_identifierDocument, _identifierFilePath);
+            Xml.SaveXmlDocument(_identifierDocument, _identifierFile.FullName);
         }
     }
 }
